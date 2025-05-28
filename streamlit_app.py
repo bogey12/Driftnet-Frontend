@@ -86,7 +86,7 @@ with st.sidebar:
 
     
     energy_categories = ['Electricity Rates', 'Transmission Capacity', 'Grid Reliability', 'Marginal Emissions Rate', 'Energy Incentives', 'Power Quality', 'Power Outage Risk']
-    selected_color_theme = st.selectbox('Energy data', energy_categories)
+    selected_energy = st.selectbox('Energy data', energy_categories)
     #st.write('Energy constraints')
     #option_1 = st.checkbox('Electricity ')
     #option_2 = st.checkbox('final velocity (v)')
