@@ -84,6 +84,16 @@ with st.sidebar:
     color_theme_list = ['blues', 'cividis', 'greens', 'inferno', 'magma', 'plasma', 'reds', 'rainbow', 'turbo', 'viridis']
     selected_color_theme = st.selectbox('Select a color theme', color_theme_list)
 
+    
+    energy_categories = ['Electricity Rates', 'Transmission Capacity', 'Grid Reliability', 'Marginal Emissions Rate', 'Energy Incentives', 'Power Quality', 'Power Outage Risk']
+    selected_color_theme = st.selectbox('Energy data', energy_categories)
+    #st.write('Energy constraints')
+    #option_1 = st.checkbox('Electricity ')
+    #option_2 = st.checkbox('final velocity (v)')
+    #option_3 = st.checkbox('acceleration (a)')
+    #option_4 = st.checkbox('time (t)')
+
+
 
 #######################
 # Plots
