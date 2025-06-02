@@ -67,10 +67,43 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+#######################
+# Data Processing
+def broadband_processing(df):
+    # Convert 'year' to string for better handling in Altair
+    df_county = df[df["geography_type"] == "County"]
+    df_county['fips'] = df_county['geography_id'].astype(str).str.zfill(5)
+    return df_county
+
+def water_processing(df):
+    # Convert 'year' to string for better handling in Altair
+    df['fips'] = df['county_fips'].astype(str).str.zfill(5)
+    return df
+
+def gen_random_data(df):
+    N = len(df)
+
+    # Create random data for dummy data
+    new_df = pd.DataFrame({
+        "fips": df['fips'],
+        "Dummy": np.random.rand(N)
+    })
+    input_col = "Dummy"
+    return new_df
 
 #######################
 # Load data
 df_unemp = pd.read_csv('data/us_county_unemp.csv')
+df_fixed_broadband = pd.read_csv("data/bdc_us_fixed_broadband_summary_by_geography_D24_27may2025.csv")
+df_fixed_broadband = broadband_processing(df_fixed_broadband)
+df_mobile_broadband = pd.read_csv("data/bdc_us_mobile_broadband_summary_by_geography_D24_27may2025.csv")
+df_mobile_broadband = broadband_processing(df_mobile_broadband)
+
+df_water = pd.read_csv("data/county_water_availability_full.csv")
+df_water = water_processing(df_water)
+
+random_df = gen_random_data(df_fixed_broadband)
+
 with open('data/us_county_fips.json', 'r') as f:
     geofips_county_json = json.load(f)
 
@@ -112,11 +145,50 @@ def make_choropleth(input_df, input_id, input_column, input_color_theme):
     )
     return choropleth
 
-def get_data_by_selection(file_name):
+
+
+def get_data_by_selection(category, subcategory):
     # This function would typically filter the data based on user selections
     # For now, we will return the full dataset
-    df_unemp['unemp'] = df_unemp['unemp'] * np.random.uniform(0.8, 1.2, size=len(df_unemp))  # Simulating some variability
-    return df_unemp
+    if category == "Fiber":
+        if subcategory == "Fixed Broadband":
+            df = df_fixed_broadband
+            input_col = "speed_02_02"
+            df = (
+                df
+                .groupby("fips", as_index=False)[input_col]
+                .mean()
+            )
+        else:
+            df = df_mobile_broadband
+            input_col = "mobilebb_4g_area_st_pct"
+        cmap = "viridis"
+    elif category == "Water":
+        if subcategory == "Water Availability":
+            df = df_water
+            input_col = "availability_score"
+        else:
+            df = df_water
+            input_col = "availability_score" # Change when data is available
+        cmap = "blues"
+    elif category == "Land":
+        df = random_df
+        input_col = "Dummy"
+        cmap = "earth"
+    elif category == "Zoning":
+        df = random_df
+        input_col = "Dummy"
+        cmap = "prgn"
+    elif category == "Power":
+        df = random_df
+        input_col = "Dummy"
+        cmap = "inferno"
+    else:
+        df = random_df
+        input_col = "Dummy"
+        cmap = "viridis"
+
+    return df, input_col, cmap
 
 def make_choropleth_county(input_df, input_col, input_label, geo_json, min_value, max_value, color_theme="Viridis"):
     choropleth = px.choropleth(input_df, geojson=geo_json, locations='fips', color=input_col,
@@ -221,24 +293,36 @@ maps, requirements, requirments_summary, results = st.tabs(["Map", "Requirements
 
 with maps:
     col = st.columns((1.5, 6.5), gap='medium')
+    selected_sub_cat = None
     with col[0]:
         st.markdown('### Constraints Explorer')
         st.markdown('Visualize data for data center planning')
-
-        energy_categories = ["", 'Electricity Rates', 'Transmission Capacity', 'Grid Reliability', 'Marginal Emissions Rate', 'Energy Incentives', 'Power Quality', 'Power Outage Risk']
-        selected_energy = st.selectbox('Energy', energy_categories)
-
-        regulatory_categories = ["", 'Permitting Ease', "Permitting Timeline", "Tax Incentives", "Environmental Restrictions", "Zoning Compatibility", "Local Government Support", "Building Code Complexity", "Land Use Restrictions"]
-        selected_regulatory = st.selectbox('Regulatory', regulatory_categories)
-
-        infrastructure_categories = ["", 'Permitting Ease', "Permitting Timeline", "Tax Incentives", "Environmental Restrictions", "Zoning Compatibility", "Local Government Support", "Building Code Complexity", "Land Use Restrictions"]
-        selected_infrastructure = st.selectbox('Infrastrucutre', regulatory_categories)
+        main_categories = ["Power", "Water", "Land", "Fiber", "Zoning"]
+        selected_cat = st.radio('Data Type', main_categories, index=1)
+        if selected_cat == "Fiber":
+            sub_categories = ["Fixed Broadband", "Mobile Broadband"]
+            selected_sub_cat = st.selectbox('Select Broadband Type', sub_categories)
+        elif selected_cat == "Zoning":
+            sub_categories = ["Zoning Compatibility", "Permitting Ease", "Permitting Timeline", "Environmental Restrictions", "Building Code Complexity"]
+            selected_sub_cat = st.selectbox('Select Zoning Type', sub_categories)
+        elif selected_cat == "Power":
+            sub_categories = ["Electricity Rates", "Transmission Capacity", "Grid Reliability", "Marginal Emissions Rate", "Energy Incentives", "Power Quality", "Power Outage Risk"]
+            selected_sub_cat = st.selectbox('Select Power Type', sub_categories)
+        elif selected_cat == "Water":
+            sub_categories = ["Water Availability", "Water Quality", "Water Regulations"]
+            selected_sub_cat = st.selectbox('Select Water Type', sub_categories)
+        else:
+            sub_categories = ["Land Availability", "Land Use Regulations", "Land Cost"]
+            selected_sub_cat = st.selectbox('Select Land Type', sub_categories)
 
     with col[1]:
-        constraints_name = "## " + selected_energy + " and " + selected_regulatory + " and " + selected_infrastructure
-        st.markdown(constraints_name)
-        df = get_data_by_selection(selected_energy)
-        choropleth = make_choropleth_county(df, 'unemp', "TEST", geofips_county_json, 0, 12)
+        df, input_col, cmap = get_data_by_selection(selected_cat, selected_sub_cat)
+        constraints_name = selected_cat + " - " + selected_sub_cat if selected_sub_cat else selected_cat
+        st.markdown("## " + constraints_name)
+        if input_col == "Dummy":
+            choropleth = make_choropleth_county(df, input_col, constraints_name + " (Fake Data)", geofips_county_json, 0, df[input_col].max(), color_theme=cmap)
+        else:
+            choropleth = make_choropleth_county(df, input_col, constraints_name, geofips_county_json, 0, df[input_col].max(), color_theme=cmap)
         st.plotly_chart(choropleth, use_container_width=True)
 
 with requirements:
@@ -462,31 +546,112 @@ with requirements:
 
 with requirments_summary:
     display_results_summary_two_columns(
-    region=region,
-    city=city,
-    proximity=proximity,
-    network_latency=network_latency,
-    latency_sensitivity=latency_sensitivity,
-    peak_usage=peak_usage,
-    seasonality=seasonality,
-    data_center_type=data_center_type,
-    power_cap=power_cap,
-    redundancy=redundancy,
-    power_density=power_density,
-    cooling_method=cooling_method,
-    ai_ml_hardware=ai_ml_hardware,
-    inflexible_pct=inflexible_pct,
-    ai_ml_pct=ai_ml_pct,
-    renewable_perc=renewable_perc,
-    cost_importance=cost_importance,
-    reliability_importance=reliability_importance,
-    sustainability_importance=sustainability_importance,
-    generation_sources=generation_sources,
-    storage_technologies=storage_technologies,
-    water_constraints=water_constraints,
-    land_constraints=land_constraints,
-    custom_constraints=custom_constraints,
-)
+        region=region,
+        city=city,
+        proximity=proximity,
+        network_latency=network_latency,
+        latency_sensitivity=latency_sensitivity,
+        peak_usage=peak_usage,
+        seasonality=seasonality,
+        data_center_type=data_center_type,
+        power_cap=power_cap,
+        redundancy=redundancy,
+        power_density=power_density,
+        cooling_method=cooling_method,
+        ai_ml_hardware=ai_ml_hardware,
+        inflexible_pct=inflexible_pct,
+        ai_ml_pct=ai_ml_pct,
+        renewable_perc=renewable_perc,
+        cost_importance=cost_importance,
+        reliability_importance=reliability_importance,
+        sustainability_importance=sustainability_importance,
+        generation_sources=generation_sources,
+        storage_technologies=storage_technologies,
+        water_constraints=water_constraints,
+        land_constraints=land_constraints,
+        custom_constraints=custom_constraints,
+    )
+
+with results:
+    st.header("Performance Metrics")
+
+    # --- Show three key metrics side by side ---
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric(label="Time Saved", value="8 months")
+        st.caption("Estimated time saved in development and deployment")
+
+    with col2:
+        st.metric(label="Lifetime Cost Savings", value="$42.7 M")
+        st.caption("Projected cost savings over 10-year lifetime")
+
+    with col3:
+        st.metric(label="Reliability", value="99.99 %")
+        st.caption("Projected uptime based on location and infrastructure")
+
+
+    st.markdown("---")  # horizontal rule to separate sections
+
+    # ---------------------
+    # Generation & Storage
+    # ---------------------
+    st.subheader("Generation and Storage Mix")
+
+    # 1) Build two small DataFrames for the pie charts
+    gen_data = pd.DataFrame({
+        "Source": ["Solar", "Wind", "Hydro", "Geothermal", "Nuclear"],
+        "Percentage": [45, 35, 10, 5, 5]
+    })
+
+    storage_data = pd.DataFrame({
+        "Storage Type": ["Battery Storage", "Pumped Hydro", "Hydrogen", "Thermal Storage"],
+        "Percentage": [60, 20, 10, 10]
+    })
+
+    # 2) Create pie charts with Plotly Express
+    fig_gen = px.pie(
+        gen_data,
+        names="Source",
+        values="Percentage",
+        title="Generation Mix",
+        hole=0.3  # optional: makes it a donut chart instead of a full pie
+    )
+    fig_storage = px.pie(
+        storage_data,
+        names="Storage Type",
+        values="Percentage",
+        title="Storage Systems",
+        hole=0.3
+    )
+
+    # 3) Display them side by side
+    col4, col5 = st.columns(2)
+    with col4:
+        st.plotly_chart(fig_gen, use_container_width=True)
+    with col5:
+        st.plotly_chart(fig_storage, use_container_width=True)
+
+
+    st.markdown("---")  # separate again
+
+    # ----------------------
+    # System Characteristics
+    # ----------------------
+    st.subheader("System Characteristics")
+
+    # We can show each as a small metric
+    col6, col7, col8 = st.columns(3)
+    with col6:
+        st.metric(label="Reliability", value="99.99 %")
+    with col7:
+        st.metric(label="Cost Efficiency", value="$0.052 / kWh")
+        st.caption("Levelized cost per kWh")
+    with col8:
+        st.metric(label="Renewable %", value="95 %")
+        st.caption("Of total generation")
+
+    # If you also want to show “Annual uptime” as text under the metrics:
+    st.markdown("*Annual uptime based on projected operations and maintenance assumptions*")
 
 
 
