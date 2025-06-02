@@ -102,7 +102,7 @@ df_mobile_broadband = broadband_processing(df_mobile_broadband)
 df_water = pd.read_csv("data/county_water_availability_full.csv")
 df_water = water_processing(df_water)
 
-random_df = gen_random_data(df_fixed_broadband)
+random_df = gen_random_data(df_water)
 
 with open('data/us_county_fips.json', 'r') as f:
     geofips_county_json = json.load(f)
@@ -129,24 +129,6 @@ def make_heatmap(input_df, input_y, input_x, input_color, input_color_theme):
     return heatmap
 
 # Choropleth map
-def make_choropleth(input_df, input_id, input_column, input_color_theme):
-    choropleth = px.choropleth(input_df, locations=input_id, color=input_column, locationmode="USA-states",
-                               color_continuous_scale=input_color_theme,
-                               range_color=(0, max(df_selected_year.population)),
-                               scope="usa",
-                               labels={'population':'Population'}
-                              )
-    choropleth.update_layout(
-        template='plotly_dark',
-        plot_bgcolor='rgba(0, 0, 0, 0)',
-        paper_bgcolor='rgba(0, 0, 0, 0)',
-        margin=dict(l=0, r=0, t=0, b=0),
-        height=350
-    )
-    return choropleth
-
-
-
 def get_data_by_selection(category, subcategory):
     # This function would typically filter the data based on user selections
     # For now, we will return the full dataset
@@ -320,7 +302,7 @@ with maps:
         constraints_name = selected_cat + " - " + selected_sub_cat if selected_sub_cat else selected_cat
         st.markdown("## " + constraints_name)
         if input_col == "Dummy":
-            choropleth = make_choropleth_county(df, input_col, constraints_name + " (Fake Data)", geofips_county_json, 0, df[input_col].max(), color_theme=cmap)
+            choropleth = make_choropleth_county(df, input_col, constraints_name + " (Fake Data)", geofips_county_json, 0, 1, color_theme=cmap)
         else:
             choropleth = make_choropleth_county(df, input_col, constraints_name, geofips_county_json, 0, df[input_col].max(), color_theme=cmap)
         st.plotly_chart(choropleth, use_container_width=True)
