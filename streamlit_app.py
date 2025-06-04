@@ -6,8 +6,8 @@ import altair as alt
 import plotly.express as px
 import json
 import numpy as np
-import folium
-from streamlit_folium import st_folium
+#import folium
+#from streamlit_folium import st_folium
 
 
 
