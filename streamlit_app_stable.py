@@ -6,15 +6,12 @@ import altair as alt
 import plotly.express as px
 import json
 import numpy as np
-import folium
-from streamlit_folium import st_folium
-
 
 
 #######################
 # Page configuration
 st.set_page_config(
-    page_title="US Data Center Constraints Explorer",
+    page_title="US Population Dashboard",
     page_icon="🏂",
     layout="wide",
     initial_sidebar_state="expanded")
@@ -76,38 +73,37 @@ def broadband_processing(df):
     # Convert 'year' to string for better handling in Altair
     df_county = df[df["geography_type"] == "County"]
     df_county['fips'] = df_county['geography_id'].astype(str).str.zfill(5)
-    df_county['fibre_score'] = 100 * df_county['mobilebb_4g_area_st_pct'].fillna(0)
     return df_county
 
 def water_processing(df):
     # Convert 'year' to string for better handling in Altair
     df['fips'] = df['county_fips'].astype(str).str.zfill(5)
-    df['water_score'] = df['availability_score']
     return df
 
-def gen_random_data(df, col_name):
+def gen_random_data(df):
     N = len(df)
+
     # Create random data for dummy data
     new_df = pd.DataFrame({
         "fips": df['fips'],
-        col_name: 100 * np.random.rand(N)
+        "Dummy": np.random.rand(N)
     })
+    input_col = "Dummy"
     return new_df
-
-@st.cache_data
-def load_score_data():
-    # Replace file paths & column names with your actual CSV/Parquet/etc. files
-    df_water = water_processing(pd.read_csv("data/county_water_availability_full.csv")) # fips, water_score
-    df_land = gen_random_data(df_water, "land_score")    # fips, land_score
-    df_zoning = gen_random_data(df_water, "zoning_score") # fips, zoning_score
-    df_fiber = broadband_processing(pd.read_csv("data/bdc_us_mobile_broadband_summary_by_geography_D24_27may2025.csv"))   # fips, fiber_score
-    df_power = gen_random_data(df_water, "power_score")  # fips, power_score
-    return df_water, df_land, df_zoning, df_fiber, df_power
 
 #######################
 # Load data
-df_master = pd.read_csv("data/county_scores.csv")
-df_master["fips"] = df_master["fips"].astype(str).str.zfill(5)
+df_unemp = pd.read_csv('data/us_county_unemp.csv')
+df_fixed_broadband = pd.read_csv("data/bdc_us_fixed_broadband_summary_by_geography_D24_27may2025.csv")
+df_fixed_broadband = broadband_processing(df_fixed_broadband)
+df_mobile_broadband = pd.read_csv("data/bdc_us_mobile_broadband_summary_by_geography_D24_27may2025.csv")
+df_mobile_broadband = broadband_processing(df_mobile_broadband)
+
+df_water = pd.read_csv("data/county_water_availability_full.csv")
+df_water = water_processing(df_water)
+
+random_df = gen_random_data(df_water)
+
 with open('data/us_county_fips.json', 'r') as f:
     geofips_county_json = json.load(f)
 
@@ -191,101 +187,6 @@ def make_choropleth_county(input_df, input_col, input_label, geo_json, min_value
         height=350
     )
     return choropleth
-
-def make_choropleth_threshold(df_marked, max_priority, county_geojson, color_theme="Viridis"):
-    df_marked["color_val"] = df_marked["passes"] * df_marked[max_priority]
-
-    # Pass 'color_val' into your choropleth.  Rows with color_val=0 will appear unlit.
-    choropleth = px.choropleth(
-        df_marked,
-        geojson=county_geojson,
-        locations="fips",
-        color="color_val",
-        color_continuous_scale=color_theme,
-        range_color=(0, 100),
-        scope="usa",
-        labels={"color_val": f"{max_priority}"},
-    )
-    choropleth.update_layout(
-        template='plotly',
-        plot_bgcolor='rgba(0, 0, 0, 0)',
-        paper_bgcolor='rgba(0, 0, 0, 0)',
-        margin=dict(l=0, r=0, t=0, b=0),
-        height=500
-    )
-    return choropleth
-
-def make_folium_map(df, geojson_path, colormap="Viridis", key_on="feature.properties.GEO_ID"):
-    """
-    df: DataFrame with 'fips' and 'color_val' columns
-    geojson_path: path to your counties GeoJSON
-    key_on: how to match GeoJSON features to df['fips'] (often 'feature.properties.GEOID')
-    """
-    # Center roughly on contiguous US:
-    m = folium.Map(location=[37.8, -96], zoom_start=4, tiles="CartoDB dark_matter")
-
-    folium.Choropleth(
-        geo_data=geojson_path,
-        name="choropleth",
-        data=df,
-        columns=["fips", "color_val"],
-        key_on=key_on,
-        fill_color=colormap,         # any built‐in color palette (YlOrRd, Viridis, etc.)
-        fill_opacity=0.7,
-        line_opacity=0.2,
-        nan_fill_color="lightgrey",   # <— counties with NaN get grey
-        legend_name="Priority Score",
-        highlight=True
-    ).add_to(m)
-
-    # Add a tooltip that shows FIPS and color_val on hover
-    folium.GeoJson(
-        geojson_path,
-        style_function=lambda feature: {
-            "fillOpacity": 0,
-            "color": "transparent"
-        },
-        tooltip=folium.GeoJsonTooltip(
-            fields=["GEO_ID"],  # or whatever the property is in your GeoJSON
-            aliases=["FIPS:"],
-            labels=True,
-            sticky=False
-        )
-    ).add_to(m)
-
-    return m
-
-def get_cmap(max_priority_col):
-    """
-    Return a color map based on the max_priority_col.
-    This is used to set the color intensity of the choropleth map.
-    """
-    if max_priority_col == "water_score":
-        return "Blues"
-    elif max_priority_col == "land_score":
-        return "Greens"
-    elif max_priority_col == "zoning_score":
-        return "Purples"
-    elif max_priority_col == "fiber_score":
-        return "Viridis"
-    elif max_priority_col == "power_score":
-        return "Inferno"
-    else:
-        return "Viridis"
-
-def filter_master_df(df, thresholds: dict):
-    """
-    Return a new DataFrame in which each 'fips' row passes
-    ALL of the thresholds in the dictionary.
-    thresholds: {"water_score": 80, "land_score": 70, ...}
-    """
-    df["passes"] = 1
-
-    for col, min_val in thresholds.items():
-        # Any row where col < min_val (or is NaN) should be marked 0
-        mask_fails = df[col].fillna(-1) < min_val
-        df.loc[mask_fails, "passes"] = np.nan
-    return df
 
 #######################
 # User Requirements Summary Function
@@ -378,52 +279,33 @@ with maps:
     with col[0]:
         st.markdown('### Constraints Explorer')
         st.markdown('Visualize data for data center planning')
-        all_categories = ["Water", "Land", "Zoning", "Fiber", "Power"]
-        st.markdown("1) Select categories to filter (you can pick 1–5)")
-        selected_cats = st.multiselect(
-            "",
-            options=all_categories
-        )
-
-        if not selected_cats:
-            st.warning("▶️ Pick at least one category above to continue.")
-            st.stop()
-
-        # 4b) For each chosen category, ask for a minimum‐score:
-        min_thresholds = {}  # e.g. {"Water": 80, "Land": 70, ...}
-
-        st.markdown("2) For each selected category, set a minimum score (0–100)")
-
-        for cat in selected_cats:
-            # We know our DataFrames had columns named "<cat>_score"
-            col_name = f"{cat.lower()}_score"
-            # Provide a slider or number_input for the user
-            min_val = st.slider(
-                label=f"Minimum {cat} score",
-                min_value=0,
-                max_value=100,
-                value=0,               # default
-                key=f"min_{col_name}"
-            )
-            min_thresholds[col_name] = min_val
-        st.markdown("3) Choose a category as Max Priority")
-        max_priority = st.selectbox(
-            "Max Priority ➤",
-            options=selected_cats,
-            index=0
-        )
-        max_priority_col = f"{max_priority.lower()}_score"
-        df_for_map = filter_master_df(df_master, min_thresholds)
-        cmap = get_cmap(max_priority_col)
+        main_categories = ["Power", "Water", "Land", "Fiber", "Zoning"]
+        selected_cat = st.radio('Data Type', main_categories, index=1)
+        if selected_cat == "Fiber":
+            sub_categories = ["Fixed Broadband", "Mobile Broadband"]
+            selected_sub_cat = st.selectbox('Select Broadband Type', sub_categories)
+        elif selected_cat == "Zoning":
+            sub_categories = ["Zoning Compatibility", "Permitting Ease", "Permitting Timeline", "Environmental Restrictions", "Building Code Complexity"]
+            selected_sub_cat = st.selectbox('Select Zoning Type', sub_categories)
+        elif selected_cat == "Power":
+            sub_categories = ["Electricity Rates", "Transmission Capacity", "Grid Reliability", "Marginal Emissions Rate", "Energy Incentives", "Power Quality", "Power Outage Risk"]
+            selected_sub_cat = st.selectbox('Select Power Type', sub_categories)
+        elif selected_cat == "Water":
+            sub_categories = ["Water Availability", "Water Quality", "Water Regulations"]
+            selected_sub_cat = st.selectbox('Select Water Type', sub_categories)
+        else:
+            sub_categories = ["Land Availability", "Land Use Regulations", "Land Cost"]
+            selected_sub_cat = st.selectbox('Select Land Type', sub_categories)
 
     with col[1]:
-        st.markdown(f"### {max_priority} Score")
-        #st.markdown(f"### Water Availability")
-        choro = make_choropleth_threshold(df_for_map, max_priority_col, geofips_county_json, cmap)
-        st.plotly_chart(choro, use_container_width=True)
-        #df_for_map['color_val'] = df_for_map[max_priority_col] * df_for_map['passes']
-        #county_map = make_folium_map(df_for_map, "data/us_county_fips.json", cmap)
-        #st_data = st_folium(county_map, width="100%", height=600)
+        df, input_col, cmap = get_data_by_selection(selected_cat, selected_sub_cat)
+        constraints_name = selected_cat + " - " + selected_sub_cat if selected_sub_cat else selected_cat
+        st.markdown("## " + constraints_name)
+        if input_col == "Dummy":
+            choropleth = make_choropleth_county(df, input_col, constraints_name + " (Fake Data)", geofips_county_json, 0, 1, color_theme=cmap)
+        else:
+            choropleth = make_choropleth_county(df, input_col, constraints_name, geofips_county_json, 0, df[input_col].max(), color_theme=cmap)
+        st.plotly_chart(choropleth, use_container_width=True)
 
 with requirements:
     st.header("Requirements")
@@ -752,10 +634,3 @@ with results:
 
     # If you also want to show “Annual uptime” as text under the metrics:
     st.markdown("*Annual uptime based on projected operations and maintenance assumptions*")
-
-
-
-
-
-    
-
