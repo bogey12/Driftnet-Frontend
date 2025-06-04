@@ -106,7 +106,7 @@ def load_score_data():
 
 #######################
 # Load data
-df_master = pd.read_csv("data/county_scores.csv")
+df_master = pd.read_csv("testdata/county_scores.csv")
 df_master["fips"] = df_master["fips"].astype(str).str.zfill(5)
 with open('data/us_county_fips.json', 'r') as f:
     geofips_county_json = json.load(f)
