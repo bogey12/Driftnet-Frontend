@@ -432,7 +432,7 @@ with requirements:
     city = st.text_input("Add specific cities or sites you'd like to consider", "None")
     st.markdown("#### Proximity Importance")
     proximity = st.slider("How important is proximity to your existing infrastructure or customer base? (scale of 0 - 100)", 0, 100, 50)
-    st.markdown("#### Netowork Latency Importance")
+    st.markdown("#### Network Latency Importance")
     network_latency = st.radio(
         "How important is network latency for your workloads?",
         ["Not Important", "Somewhat Important", "Important", "Very Important"],
