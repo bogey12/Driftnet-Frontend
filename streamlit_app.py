@@ -6,9 +6,32 @@ import altair as alt
 import plotly.express as px
 import json
 import numpy as np
+import plotly.graph_objects as go
 #import folium
 #from streamlit_folium import st_folium
 
+#######################
+# config
+CORE_MARKET_FIPS = [
+    # Northern Virginia
+    "51107", "51059", "51153", "51600", "51610", "51683", "51685",
+    # Southern Ohio (Columbus)
+    "39049", "39041", "39117", "39089", "39129",
+    # Chicago area
+    "17031", "17043", "17089", "17097", "17111", "17197",
+    # Des Moines area
+    "19153", "19121", "19135", "19181",
+    # Santa Clara
+    "06085", "06081", "06001", "06075",
+    # Central Oregon
+    "41017", "41047", "41051",
+    # Denver
+    "08001", "08005", "08013", "08014", "08031", "08035", "08059",
+    # Kansas City
+    "29095", "29037", "29165", "20091", "20103", "20121",
+    # Nashville
+    "47037", "47147", "47149", "47159", "47187"
+]
 
 
 #######################
@@ -76,7 +99,7 @@ def broadband_processing(df):
     # Convert 'year' to string for better handling in Altair
     df_county = df[df["geography_type"] == "County"]
     df_county['fips'] = df_county['geography_id'].astype(str).str.zfill(5)
-    df_county['fibre_score'] = 100 * df_county['mobilebb_4g_area_st_pct'].fillna(0)
+    df_county['fiber_score'] = 100 * df_county['mobilebb_4g_area_st_pct'].fillna(0)
     return df_county
 
 def water_processing(df):
@@ -96,18 +119,60 @@ def gen_random_data(df, col_name):
 
 @st.cache_data
 def load_score_data():
-    # Replace file paths & column names with your actual CSV/Parquet/etc. files
-    df_water = water_processing(pd.read_csv("data/county_water_availability_full.csv")) # fips, water_score
-    df_land = gen_random_data(df_water, "land_score")    # fips, land_score
-    df_zoning = gen_random_data(df_water, "zoning_score") # fips, zoning_score
-    df_fiber = broadband_processing(pd.read_csv("data/bdc_us_mobile_broadband_summary_by_geography_D24_27may2025.csv"))   # fips, fiber_score
-    df_power = gen_random_data(df_water, "power_score")  # fips, power_score
-    return df_water, df_land, df_zoning, df_fiber, df_power
+    # 1. Load NEW datasets first
+    df_grid = pd.read_csv("data/doe_grid_constraints.csv")[["fips","transmission_cap","interconnection_timeline","hv_line_proximity"]]
+    df_future = pd.read_parquet("data/future_scalability.parquet")[["fips","power_demand_growth","zoning_evolution","climate_resilience"]]
+
+    # 2. Load ORIGINAL datasets
+    df_water = water_processing(pd.read_csv("data/county_water_availability_full.csv"))
+    df_land = gen_random_data(df_water, "land_score")
+    df_zoning = gen_random_data(df_water, "zoning_score")
+    df_fiber = broadband_processing(pd.read_csv("data/bdc_us_mobile_broadband_summary_by_geography_D24_27may2025.csv"))
+    df_power = gen_random_data(df_water, "power_score")
+
+    df_water['fips'] = df_water['fips'].astype(str).str.zfill(5)
+    df_land['fips'] = df_land['fips'].astype(str).str.zfill(5)
+    df_zoning['fips'] = df_zoning['fips'].astype(str).str.zfill(5)
+    df_fiber['fips'] = df_fiber['fips'].astype(str).str.zfill(5)
+    df_power['fips'] = df_power['fips'].astype(str).str.zfill(5)
+    df_grid['fips'] = df_grid['fips'].astype(str).str.zfill(5)
+    df_future['fips'] = df_future['fips'].astype(str).str.zfill(5)
+
+    # 3. Create master DF by merging ALL datasets
+    df_master = df_water[["fips", "water_score"]]
+    for df in [df_land, df_zoning, df_fiber, df_power, df_grid, df_future]:
+        df_master = df_master.merge(df, on="fips", how="outer")
+
+    # 4. CREATE COMPOSITE SCORE COLUMNS
+    df_master = df_master.fillna(0)
+
+    # Keep existing Power Grid and Future Scalability
+    df_master["power grid_score"] = (
+        df_master["transmission_cap"]*0.4 +
+        df_master["interconnection_timeline"]*0.3 +
+        df_master["hv_line_proximity"]*0.3
+    )
+
+    df_master["future scalability_score"] = (
+        df_master["power_demand_growth"]*0.5 +
+        df_master["zoning_evolution"]*0.3 +
+        df_master["climate_resilience"]*0.2
+    )
+
+    # Map old categories to new structure
+    df_master["fiber_score"] = df_master["fiber_score"]  # Use existing fiber processing
+    df_master["land_score"] = df_master["land_score"]    # Use existing land processing  
+    df_master["regulations_score"] = df_master["zoning_score"]  # Repurpose zoning as regulations
+    df_master["climate factors_score"] = df_master["water_score"]  # Repurpose water as climate factors
+
+    return df_water, df_land, df_zoning, df_fiber, df_power, df_master  # Added df_master to return
 
 #######################
 # Load data
-df_master = pd.read_csv("testdata/county_scores.csv")
+# Updated to receive df_master from function
+df_water, df_land, df_zoning, df_fiber, df_power, df_master = load_score_data()
 df_master["fips"] = df_master["fips"].astype(str).str.zfill(5)
+
 with open('data/us_county_fips.json', 'r') as f:
     geofips_county_json = json.load(f)
 
@@ -193,9 +258,7 @@ def make_choropleth_county(input_df, input_col, input_label, geo_json, min_value
     return choropleth
 
 def make_choropleth_threshold(df_marked, max_priority, county_geojson, color_theme="Viridis"):
-    df_marked["color_val"] = df_marked["passes"] * df_marked[max_priority]
-
-    # Pass 'color_val' into your choropleth.  Rows with color_val=0 will appear unlit.
+    # Use color_val which is set by the checkbox logic above
     choropleth = px.choropleth(
         df_marked,
         geojson=county_geojson,
@@ -206,6 +269,7 @@ def make_choropleth_threshold(df_marked, max_priority, county_geojson, color_the
         scope="usa",
         labels={"color_val": f"{max_priority}"},
     )
+    
     choropleth.update_layout(
         template='plotly',
         plot_bgcolor='rgba(0, 0, 0, 0)',
@@ -256,20 +320,18 @@ def make_folium_map(df, geojson_path, colormap="Viridis", key_on="feature.proper
     return m
 
 def get_cmap(max_priority_col):
-    """
-    Return a color map based on the max_priority_col.
-    This is used to set the color intensity of the choropleth map.
-    """
-    if max_priority_col == "water_score":
+    if max_priority_col == "climate factors_score":
         return "Blues"
     elif max_priority_col == "land_score":
         return "Greens"
-    elif max_priority_col == "zoning_score":
+    elif max_priority_col == "regulations_score":
         return "Purples"
     elif max_priority_col == "fiber_score":
         return "Viridis"
-    elif max_priority_col == "power_score":
+    elif max_priority_col == "power grid_score":
         return "Inferno"
+    elif max_priority_col == "future scalability_score":
+        return "Teal"
     else:
         return "Viridis"
 
@@ -379,7 +441,8 @@ with maps:
         st.markdown('### Constraints Explorer')
         st.markdown('Visualize data for data center planning')
         #all_categories = ["Water", "Land", "Regulations", "Fiber", "Power"]
-        all_categories = ["Power Grid", "Fiber", "Zoning", "Water", "Land", "Future Scalability"]
+        show_core_only = st.checkbox("Show core connectivity markets only", value=False)
+        all_categories = ["Power Grid", "Fiber", "Land", "Regulations", "Climate Factors", "Future Scalability"]
         st.markdown("1) Select categories to filter (you can pick 1–5)")
         selected_cats = st.multiselect(
             "",
@@ -396,17 +459,53 @@ with maps:
         st.markdown("2) For each selected category, set a minimum score (0–100)")
 
         for cat in selected_cats:
-            # We know our DataFrames had columns named "<cat>_score"
             col_name = f"{cat.lower()}_score"
-            # Provide a slider or number_input for the user
+            
+            # ADD CATEGORY DESCRIPTIONS
+            if cat == "Power Grid":
+                st.markdown("**Grid Reliability Factors:**")
+                st.markdown("- Transmission Capacity")
+                st.markdown("- Interconnection Queue Time")  
+                st.markdown("- High Voltage Line Proximity")
+            elif cat == "Future Scalability":
+                st.markdown("**Long-Term Viability:**")
+                st.markdown("- Power Demand Growth")
+                st.markdown("- Zoning Evolution")
+                st.markdown("- Climate Resilience")
+            elif cat == "Fiber":
+                st.markdown("**Connectivity Infrastructure:**")
+                st.markdown("- Proximity to internet exchange points")
+                st.markdown("- Multiple fiber route redundancy") 
+                st.markdown("- Subsea cable access")
+                st.markdown("- API connectivity quality")
+            elif cat == "Land":
+                st.markdown("**Site Development Factors:**")
+                st.markdown("- Zoning compliance for data centers")
+                #st.markdown("- Available parcels meeting requirements")
+                st.markdown("- Distance from residential areas")
+                st.markdown("- Flat, developable terrain")
+            elif cat == "Regulations":
+                st.markdown("**Regulatory Environment:**")
+                st.markdown("- State legislature support")
+                st.markdown("- Permitting timeline (90-day target)")
+                st.markdown("- Economic development incentives")
+                st.markdown("- Utility coordination requirements")
+            elif cat == "Climate Factors":
+                st.markdown("**Environmental Risk Assessment:**")
+                st.markdown("- Flood risk profile")
+                st.markdown("- Wildfire exposure")
+                st.markdown("- Temperature/cooling efficiency")
+                st.markdown("- Water availability (closed-loop focus)")
+            
             min_val = st.slider(
                 label=f"Minimum {cat} score",
                 min_value=0,
                 max_value=100,
-                value=0,               # default
+                value=0,
                 key=f"min_{col_name}"
             )
             min_thresholds[col_name] = min_val
+
         st.markdown("3) Choose a category as Max Priority")
         max_priority = st.selectbox(
             "Max Priority ➤",
@@ -415,6 +514,18 @@ with maps:
         )
         max_priority_col = f"{max_priority.lower()}_score"
         df_for_map = filter_master_df(df_master, min_thresholds)
+        
+        if show_core_only:
+            # Set color_val to NaN for non-core counties (they will appear white)
+            df_for_map['color_val'] = np.where(
+                df_for_map['fips'].isin(CORE_MARKET_FIPS),
+                df_for_map[max_priority_col] * df_for_map['passes'],
+                np.nan
+            )
+        else:
+            df_for_map['color_val'] = df_for_map[max_priority_col] * df_for_map['passes']
+
+
         cmap = get_cmap(max_priority_col)
 
     with col[1]:
