@@ -147,7 +147,7 @@ def load_score_data():
     df_master = df_master.fillna(0)
 
     # Keep existing Power Grid and Future Scalability
-    df_master["power grid_score"] = (
+    df_master["power_score"] = (
         df_master["transmission_cap"]*0.4 +
         df_master["interconnection_timeline"]*0.3 +
         df_master["hv_line_proximity"]*0.3
@@ -328,7 +328,7 @@ def get_cmap(max_priority_col):
         return "Purples"
     elif max_priority_col == "fiber_score":
         return "Viridis"
-    elif max_priority_col == "power grid_score":
+    elif max_priority_col == "power_score":
         return "Inferno"
     elif max_priority_col == "future scalability_score":
         return "Teal"
@@ -442,7 +442,7 @@ with maps:
         st.markdown('Visualize data for data center planning')
         #all_categories = ["Water", "Land", "Regulations", "Fiber", "Power"]
         show_core_only = st.checkbox("Show core connectivity markets only", value=False)
-        all_categories = ["Power Grid", "Fiber", "Land", "Regulations", "Climate Factors", "Future Scalability"]
+        all_categories = ["Power", "Fiber", "Land", "Regulations", "Climate Factors", "Future Scalability"]
         st.markdown("1) Select categories to filter (you can pick 1–5)")
         selected_cats = st.multiselect(
             "",
@@ -462,11 +462,12 @@ with maps:
             col_name = f"{cat.lower()}_score"
             
             # ADD CATEGORY DESCRIPTIONS
-            if cat == "Power Grid":
+            if cat == "Power":
                 st.markdown("**Grid Reliability Factors:**")
                 st.markdown("- Transmission Capacity")
                 st.markdown("- Interconnection Queue Time")  
                 st.markdown("- High Voltage Line Proximity")
+                st.markdown("- Natural Gas Proximity")
             elif cat == "Future Scalability":
                 st.markdown("**Long-Term Viability:**")
                 st.markdown("- Power Demand Growth")
