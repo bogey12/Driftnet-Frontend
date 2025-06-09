@@ -378,7 +378,8 @@ with maps:
     with col[0]:
         st.markdown('### Constraints Explorer')
         st.markdown('Visualize data for data center planning')
-        all_categories = ["Water", "Land", "Regulations", "Fiber", "Power"]
+        #all_categories = ["Water", "Land", "Regulations", "Fiber", "Power"]
+        all_categories = ["Power Grid", "Fiber", "Zoning", "Water", "Land", "Future Scalability"]
         st.markdown("1) Select categories to filter (you can pick 1–5)")
         selected_cats = st.multiselect(
             "",
