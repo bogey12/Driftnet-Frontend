@@ -289,7 +289,6 @@ def filter_master_df(df, thresholds: dict):
     thresholds: {"water_score": 80, "land_score": 70, ...}
     """
     df["passes"] = 1
-
     for col, min_val in thresholds.items():
         # Any row where col < min_val (or is NaN) should be marked 0
         mask_fails = df[col].fillna(-1) < min_val
@@ -370,10 +369,11 @@ def make_zoomed_choropleth(df_marked, max_priority, county_geojson, region_name,
 def census_blockgroup_choropleth(gdf, max_priority, core_market, cmap, thresholds):
     # Get rows of the core market
     columb_gdf_proj = gdf[gdf['statecounty_fips'].isin(CORE_MARKET_FIPS_DICT[core_market])]
-    #columb_gdf_proj = filter_master_df(columb_gdf_proj, thresholds)
+    columb_gdf_proj = filter_master_df(columb_gdf_proj, thresholds)
+    columb_gdf_proj['color_val'] = columb_gdf_proj[max_priority] * columb_gdf_proj['passes']
     # Clean invalid geometries
-    columb_gdf_proj = columb_gdf_proj.to_crs(epsg=3857)
-    st.markdown(f"### {len(columb_gdf_proj)}")
+    columb_gdf_proj = columb_gdf_proj.to_crs(epsg=4326)
+    #st.markdown(f"### {len(columb_gdf_proj)}")
 
     # Use projected centroid and convert back to EPSG:4326
     center = {
@@ -386,12 +386,14 @@ def census_blockgroup_choropleth(gdf, max_priority, core_market, cmap, threshold
         columb_gdf_proj,
         geojson=columb_gdf_proj.__geo_interface__,
         locations=columb_gdf_proj.index,
-        color=max_priority,
+        color="color_val",
         color_continuous_scale=cmap,
         zoom=9,
         center=center,
-        opacity=0.6
+        opacity=0.6,
+        labels={"color_val": f"{max_priority}"}
     )
+
     fig.update_layout(
         template='plotly',
         plot_bgcolor='rgba(0, 0, 0, 0)',
