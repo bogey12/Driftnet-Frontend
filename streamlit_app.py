@@ -7,12 +7,14 @@ import plotly.express as px
 import json
 import numpy as np
 import plotly.graph_objects as go
+import geopandas as gpd
+from shapely.geometry import mapping
 #import folium
 #from streamlit_folium import st_folium
 
 #######################
 # config
-CORE_MARKET_FIPS = [
+CORE_MARKET_FIPS_OLD = [
     # Northern Virginia
     "51107", "51059", "51153", "51600", "51610", "51683", "51685",
     # Southern Ohio (Columbus)
@@ -32,6 +34,37 @@ CORE_MARKET_FIPS = [
     # Nashville
     "47037", "47147", "47149", "47159", "47187"
 ]
+
+CORE_MARKET_FIPS_DICT = {
+    "Northern Virginia": [
+        "51107", "51059", "51153", "51600", "51610", "51683", "51685"
+    ],
+    "Southern Ohio (Columbus)": [
+        "39049", "39041", "39117", "39089", "39129"
+    ],
+    "Chicago area": [
+        "17031", "17043", "17089", "17097", "17111", "17197"
+    ],
+    "Des Moines area": [
+        "19153", "19121", "19135", "19181"
+    ],
+    "Santa Clara": [
+        "06085", "06081", "06001", "06075"
+    ],
+    "Central Oregon": [
+        "41017", "41047", "41051"
+    ],
+    "Denver": [
+        "08001", "08005", "08013", "08014", "08031", "08035", "08059"
+    ],
+    "Kansas City": [
+        "29095", "29037", "29165", "20091", "20103", "20121"
+    ],
+    "Nashville": [
+        "47037", "47147", "47149", "47159", "47187"
+    ]
+}
+
 
 
 #######################
@@ -160,22 +193,30 @@ def load_score_data():
     )
 
     # Map old categories to new structure
-    df_master["fiber_score"] = df_master["fiber_score"]  # Use existing fiber processing
-    df_master["land_score"] = df_master["land_score"]    # Use existing land processing  
-    df_master["regulations_score"] = df_master["zoning_score"]  # Repurpose zoning as regulations
-    df_master["climate factors_score"] = df_master["water_score"]  # Repurpose water as climate factors
+    df_master["fiber_score"] = df_master["fiber_score"] # Use existing fiber processing
+    df_master["land_score"] = df_master["land_score"]  # Use existing land processing  
+    df_master["regulations_score"] = df_master["zoning_score"] # Repurpose zoning as regulations
+    df_master["climate factors_score"] = df_master["water_score"] # Repurpose water as climate factors
 
     return df_water, df_land, df_zoning, df_fiber, df_power, df_master  # Added df_master to return
+
+@st.cache_data
+def load_geo_data():
+    #zoning_gdf = gpd.read_file("data/Columbus_zoning.geojson")
+    #zoning_gdf = zoning_gdf.to_crs(epsg=4326)
+    #zoning_gdf["id"] = zoning_gdf.index.astype(str)
+    #zoning_geojson = zoning_gdf.__geo_interface__
+    blockgroup_gdf = gpd.read_file('data/core_markets_blockgroup.geojson')
+    with open('data/us_county_fips.json', 'r') as f:
+        geofips_county_json = json.load(f)
+    return blockgroup_gdf, geofips_county_json
 
 #######################
 # Load data
 # Updated to receive df_master from function
 df_water, df_land, df_zoning, df_fiber, df_power, df_master = load_score_data()
 df_master["fips"] = df_master["fips"].astype(str).str.zfill(5)
-
-with open('data/us_county_fips.json', 'r') as f:
-    geofips_county_json = json.load(f)
-
+blockgroup_gdf, geofips_county_json = load_geo_data()
 #######################
 # Plots
 
@@ -241,6 +282,20 @@ def get_data_by_selection(category, subcategory):
 
     return df, input_col, cmap
 
+def filter_master_df(df, thresholds: dict):
+    """
+    Return a new DataFrame in which each 'fips' row passes
+    ALL of the thresholds in the dictionary.
+    thresholds: {"water_score": 80, "land_score": 70, ...}
+    """
+    df["passes"] = 1
+
+    for col, min_val in thresholds.items():
+        # Any row where col < min_val (or is NaN) should be marked 0
+        mask_fails = df[col].fillna(-1) < min_val
+        df.loc[mask_fails, "passes"] = np.nan
+    return df
+
 def make_choropleth_county(input_df, input_col, input_label, geo_json, min_value, max_value, color_theme="Viridis"):
     choropleth = px.choropleth(input_df, geojson=geo_json, locations='fips', color=input_col,
                            color_continuous_scale=color_theme,
@@ -279,45 +334,72 @@ def make_choropleth_threshold(df_marked, max_priority, county_geojson, color_the
     )
     return choropleth
 
-def make_folium_map(df, geojson_path, colormap="Viridis", key_on="feature.properties.GEO_ID"):
-    """
-    df: DataFrame with 'fips' and 'color_val' columns
-    geojson_path: path to your counties GeoJSON
-    key_on: how to match GeoJSON features to df['fips'] (often 'feature.properties.GEOID')
-    """
-    # Center roughly on contiguous US:
-    m = folium.Map(location=[37.8, -96], zoom_start=4, tiles="CartoDB dark_matter")
+def make_zoomed_choropleth(df_marked, max_priority, county_geojson, region_name, color_theme="Viridis"):
+    # Get FIPS list for selected region
+    region_fips = CORE_MARKET_FIPS_DICT[region_name]
+    
+    # Filter dataframe to only selected region's FIPS
+    df_filtered = df_marked[df_marked["fips"].isin(region_fips)]
+    
+    # Plot the choropleth without `scope='usa'` so that it zooms to selected region
+    choropleth = px.choropleth(
+        df_filtered,
+        geojson=county_geojson,
+        locations="fips",
+        color="color_val",
+        color_continuous_scale=color_theme,
+        range_color=(0, 100),
+        labels={"color_val": f"{max_priority}"},
+    )
+    
+    choropleth.update_geos(
+        fitbounds="locations",  # automatically zoom to the included counties
+        #visible=False           # remove base map (optional)
+    )
+    
+    choropleth.update_layout(
+        title=f"{region_name} - {max_priority} Score",
+        template='plotly',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+        margin=dict(l=0, r=0, t=30, b=0),
+        height=500
+    )
+    return choropleth
 
-    folium.Choropleth(
-        geo_data=geojson_path,
-        name="choropleth",
-        data=df,
-        columns=["fips", "color_val"],
-        key_on=key_on,
-        fill_color=colormap,         # any built‐in color palette (YlOrRd, Viridis, etc.)
-        fill_opacity=0.7,
-        line_opacity=0.2,
-        nan_fill_color="lightgrey",   # <— counties with NaN get grey
-        legend_name="Priority Score",
-        highlight=True
-    ).add_to(m)
+def census_blockgroup_choropleth(gdf, max_priority, core_market, cmap, thresholds):
+    # Get rows of the core market
+    columb_gdf_proj = gdf[gdf['statecounty_fips'].isin(CORE_MARKET_FIPS_DICT[core_market])]
+    #columb_gdf_proj = filter_master_df(columb_gdf_proj, thresholds)
+    # Clean invalid geometries
+    columb_gdf_proj = columb_gdf_proj.to_crs(epsg=3857)
+    st.markdown(f"### {len(columb_gdf_proj)}")
 
-    # Add a tooltip that shows FIPS and color_val on hover
-    folium.GeoJson(
-        geojson_path,
-        style_function=lambda feature: {
-            "fillOpacity": 0,
-            "color": "transparent"
-        },
-        tooltip=folium.GeoJsonTooltip(
-            fields=["GEO_ID"],  # or whatever the property is in your GeoJSON
-            aliases=["FIPS:"],
-            labels=True,
-            sticky=False
-        )
-    ).add_to(m)
+    # Use projected centroid and convert back to EPSG:4326
+    center = {
+        "lat": columb_gdf_proj.geometry.centroid.to_crs(epsg=4326).y.mean(),
+        "lon": columb_gdf_proj.geometry.centroid.to_crs(epsg=4326).x.mean()
+    }
 
-    return m
+    # Use new choropleth_map function
+    fig = px.choropleth_map(
+        columb_gdf_proj,
+        geojson=columb_gdf_proj.__geo_interface__,
+        locations=columb_gdf_proj.index,
+        color=max_priority,
+        color_continuous_scale=cmap,
+        zoom=9,
+        center=center,
+        opacity=0.6
+    )
+    fig.update_layout(
+        template='plotly',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+        margin=dict(l=0, r=0, t=0, b=0),
+        height=500
+    )
+    return fig
 
 def get_cmap(max_priority_col):
     if max_priority_col == "climate factors_score":
@@ -334,20 +416,6 @@ def get_cmap(max_priority_col):
         return "Teal"
     else:
         return "Viridis"
-
-def filter_master_df(df, thresholds: dict):
-    """
-    Return a new DataFrame in which each 'fips' row passes
-    ALL of the thresholds in the dictionary.
-    thresholds: {"water_score": 80, "land_score": 70, ...}
-    """
-    df["passes"] = 1
-
-    for col, min_val in thresholds.items():
-        # Any row where col < min_val (or is NaN) should be marked 0
-        mask_fails = df[col].fillna(-1) < min_val
-        df.loc[mask_fails, "passes"] = np.nan
-    return df
 
 #######################
 # User Requirements Summary Function
@@ -442,6 +510,12 @@ with maps:
         st.markdown('Visualize data for data center planning')
         #all_categories = ["Water", "Land", "Regulations", "Fiber", "Power"]
         show_core_only = st.checkbox("Show core connectivity markets only", value=False)
+        if show_core_only:
+            select_core_market = st.selectbox(
+                "Select Core Market",
+                options=list(CORE_MARKET_FIPS_DICT.keys()),
+                index=0  # Default to first option
+            )
         all_categories = ["Power", "Fiber", "Land", "Regulations", "Climate Factors", "Future Scalability"]
         st.markdown("1) Select categories to filter (you can pick 1–5)")
         selected_cats = st.multiselect(
@@ -519,20 +593,24 @@ with maps:
         if show_core_only:
             # Set color_val to NaN for non-core counties (they will appear white)
             df_for_map['color_val'] = np.where(
-                df_for_map['fips'].isin(CORE_MARKET_FIPS),
+                df_for_map['fips'].isin(CORE_MARKET_FIPS_OLD),
                 df_for_map[max_priority_col] * df_for_map['passes'],
                 np.nan
             )
+
         else:
             df_for_map['color_val'] = df_for_map[max_priority_col] * df_for_map['passes']
-
-
         cmap = get_cmap(max_priority_col)
 
     with col[1]:
         st.markdown(f"### {max_priority} Score")
         #st.markdown(f"### Water Availability")
-        choro = make_choropleth_threshold(df_for_map, max_priority_col, geofips_county_json, cmap)
+        if show_core_only:
+            choro = census_blockgroup_choropleth(blockgroup_gdf, max_priority_col, select_core_market, cmap, min_thresholds)
+            #else:
+            #    choro = make_zoomed_choropleth(df_for_map, max_priority_col, geofips_county_json, select_core_market, cmap)
+        else:
+            choro = make_choropleth_threshold(df_for_map, max_priority_col, geofips_county_json, cmap)
         st.plotly_chart(choro, use_container_width=True)
         #df_for_map['color_val'] = df_for_map[max_priority_col] * df_for_map['passes']
         #county_map = make_folium_map(df_for_map, "data/us_county_fips.json", cmap)
