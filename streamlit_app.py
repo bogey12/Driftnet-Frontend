@@ -217,71 +217,9 @@ def load_geo_data():
 df_water, df_land, df_zoning, df_fiber, df_power, df_master = load_score_data()
 df_master["fips"] = df_master["fips"].astype(str).str.zfill(5)
 blockgroup_gdf, geofips_county_json = load_geo_data()
+
 #######################
 # Plots
-
-# Heatmap
-def make_heatmap(input_df, input_y, input_x, input_color, input_color_theme):
-    heatmap = alt.Chart(input_df).mark_rect().encode(
-            y=alt.Y(f'{input_y}:O', axis=alt.Axis(title="Year", titleFontSize=18, titlePadding=15, titleFontWeight=900, labelAngle=0)),
-            x=alt.X(f'{input_x}:O', axis=alt.Axis(title="", titleFontSize=18, titlePadding=15, titleFontWeight=900)),
-            color=alt.Color(f'max({input_color}):Q',
-                             legend=None,
-                             scale=alt.Scale(scheme=input_color_theme)),
-            stroke=alt.value('black'),
-            strokeWidth=alt.value(0.25),
-        ).properties(width=900
-        ).configure_axis(
-        labelFontSize=12,
-        titleFontSize=12
-        ) 
-    # height=300
-    return heatmap
-
-# Choropleth map
-def get_data_by_selection(category, subcategory):
-    # This function would typically filter the data based on user selections
-    # For now, we will return the full dataset
-    if category == "Fiber":
-        if subcategory == "Fixed Broadband":
-            df = df_fixed_broadband
-            input_col = "speed_02_02"
-            df = (
-                df
-                .groupby("fips", as_index=False)[input_col]
-                .mean()
-            )
-        else:
-            df = df_mobile_broadband
-            input_col = "mobilebb_4g_area_st_pct"
-        cmap = "viridis"
-    elif category == "Water":
-        if subcategory == "Water Availability":
-            df = df_water
-            input_col = "availability_score"
-        else:
-            df = df_water
-            input_col = "availability_score" # Change when data is available
-        cmap = "blues"
-    elif category == "Land":
-        df = random_df
-        input_col = "Dummy"
-        cmap = "earth"
-    elif category == "Zoning":
-        df = random_df
-        input_col = "Dummy"
-        cmap = "prgn"
-    elif category == "Power":
-        df = random_df
-        input_col = "Dummy"
-        cmap = "inferno"
-    else:
-        df = random_df
-        input_col = "Dummy"
-        cmap = "viridis"
-
-    return df, input_col, cmap
-
 def filter_master_df(df, thresholds: dict):
     """
     Return a new DataFrame in which each 'fips' row passes
