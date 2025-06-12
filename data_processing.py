@@ -83,7 +83,7 @@ def load_score_data(
         + df_master["interconnection_timeline"] * 0.3
         + df_master["hv_line_proximity"] * 0.3
     )
-    df_master["future_scalability_score"] = (
+    df_master["future scalability_score"] = (
         df_master["power_demand_growth"] * 0.5
         + df_master["zoning_evolution"] * 0.3
         + df_master["climate_resilience"] * 0.2
@@ -95,7 +95,7 @@ def load_score_data(
             "fiber_score": "fiber_score",
             "land_score": "land_score",
             "zoning_score": "regulations_score",
-            "water_score": "climate_factors_score"
+            "water_score": "climate factors_score"
         }
     )
     df_master["fips"] = df_master["fips"].astype(str).str.zfill(5)

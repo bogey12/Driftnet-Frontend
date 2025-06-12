@@ -34,6 +34,15 @@ from plotting import (
     make_choropleth_threshold
 )
 
+from constraint_utils import (
+    render_power_constraints,
+    render_land_constraints,
+    render_climate_constraints,
+    render_fiber_constraints,
+    render_future_constraints,
+    render_regulatory_constraints,
+)
+
 
 # 1) Page config
 st.set_page_config(**PAGE_SETTINGS)
@@ -120,41 +129,19 @@ with maps:
             col_name = f"{cat.lower()}_score"
             
             # ADD CATEGORY DESCRIPTIONS
-            if cat == "Power":
-                st.markdown("**Grid Reliability Factors:**")
-                st.markdown("- Transmission Capacity")
-                st.markdown("- Interconnection Queue Time")  
-                st.markdown("- High Voltage Line Proximity")
-                st.markdown("- Natural Gas Proximity")
-            elif cat == "Future Scalability":
-                st.markdown("**Long-Term Viability:**")
-                st.markdown("- Power Demand Growth")
-                st.markdown("- Zoning Evolution")
-                st.markdown("- Climate Resilience")
-            elif cat == "Fiber":
-                st.markdown("**Connectivity Infrastructure:**")
-                st.markdown("- Proximity to internet exchange points")
-                st.markdown("- Multiple fiber route redundancy") 
-                st.markdown("- Subsea cable access")
-                st.markdown("- API connectivity quality")
-            elif cat == "Land":
-                st.markdown("**Site Development Factors:**")
-                st.markdown("- Zoning compliance for data centers")
-                #st.markdown("- Available parcels meeting requirements")
-                st.markdown("- Distance from residential areas")
-                st.markdown("- Flat, developable terrain")
-            elif cat == "Regulations":
-                st.markdown("**Regulatory Environment:**")
-                st.markdown("- State legislature support")
-                st.markdown("- Permitting timeline (90-day target)")
-                st.markdown("- Economic development incentives")
-                st.markdown("- Utility coordination requirements")
-            elif cat == "Climate Factors":
-                st.markdown("**Environmental Risk Assessment:**")
-                st.markdown("- Flood risk profile")
-                st.markdown("- Wildfire exposure")
-                st.markdown("- Temperature/cooling efficiency")
-                st.markdown("- Water availability (closed-loop focus)")
+            render_map = {
+                "Power": render_power_constraints,
+                "Land": render_land_constraints,
+                "Climate Factors": render_climate_constraints,
+                "Fiber": render_fiber_constraints,
+                "Future Scalability": render_future_constraints,
+                "Regulations": render_regulatory_constraints,
+            }
+
+            if cat in render_map:
+                cat_res = render_map[cat]()
+                if cat_res and "overall_score" in cat_res:
+                    min_thresholds[col_name] = cat_res["overall_score"]
             
             min_val = st.slider(
                 label=f"Minimum {cat} score",
@@ -189,17 +176,11 @@ with maps:
 
     with col[1]:
         st.markdown(f"### {max_priority} Score")
-        #st.markdown(f"### Water Availability")
         if show_core_only:
             choro = census_blockgroup_choropleth(blockgroup_gdf, max_priority_col, select_core_market, cmap, min_thresholds, CORE_MARKET_FIPS_DICT)
-            #else:
-            #    choro = make_zoomed_choropleth(df_for_map, max_priority_col, geofips_county_json, select_core_market, cmap)
         else:
             choro = make_choropleth_threshold(df_for_map, max_priority_col, geofips_county_json, cmap)
         st.plotly_chart(choro, use_container_width=True)
-        #df_for_map['color_val'] = df_for_map[max_priority_col] * df_for_map['passes']
-        #county_map = make_folium_map(df_for_map, "data/us_county_fips.json", cmap)
-        #st_data = st_folium(county_map, width="100%", height=600)
 
 with requirements:
     st.header("Requirements")
