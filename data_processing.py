@@ -25,6 +25,9 @@ def gen_random_data(df, col_name):
     })
     return new_df
 
+def load_gridstatus_data():
+    pass
+
 def load_score_data(
     grid_path: str,
     future_path: str,

@@ -31,7 +31,8 @@ from plotting import (
     filter_master_df,
     get_cmap,
     census_blockgroup_choropleth,
-    make_choropleth_threshold
+    make_choropleth_threshold,
+    get_selected_ts, filter_intervals, plot_lmp_map
 )
 
 from constraint_utils import (
@@ -78,6 +79,11 @@ def get_geo_data(
         county_fips_json=county_fips_json
     )
 
+@st.cache_data
+def load_lmp(lmp_path: str):
+    # adjust path if needed
+    return pd.read_parquet(lmp_path)
+
 # 2) Then use those cached wrappers in your main code
 df_master = get_score_data(
     grid_path="data/doe_grid_constraints.csv",
@@ -90,6 +96,8 @@ blockgroup_gdf, geofips_county_json = get_geo_data(
     blockgroup_path="data/core_markets_blockgroup.geojson",
     county_fips_json="data/us_county_fips.json"
 )
+
+df_lmp = load_lmp(lmp_path="data/gridstatus_lmp_samples.parquet")
 
 #######################
 # Define tabs
@@ -127,6 +135,8 @@ with maps:
 
         for cat in selected_cats:
             col_name = f"{cat.lower()}_score"
+            if cat == "Power":
+                show_grid_lmp = st.checkbox("Show Grid LMP", value=False, help="Display the local grid's LMP (Locational Marginal Price) for power costs.")
             
             # ADD CATEGORY DESCRIPTIONS
             render_map = {
@@ -178,6 +188,19 @@ with maps:
         st.markdown(f"### {max_priority} Score")
         if show_core_only:
             choro = census_blockgroup_choropleth(blockgroup_gdf, max_priority_col, select_core_market, cmap, min_thresholds, CORE_MARKET_FIPS_DICT)
+        elif show_grid_lmp == True:
+            selected_date = st.date_input("Date", value=pd.to_datetime("2023-06-01").date())
+            selected_hour = st.slider("Hour (UTC)", 0, 23, 0)
+            selected_ts = get_selected_ts(selected_date, selected_hour)
+            hourly = filter_intervals(df_lmp, selected_ts)
+            if hourly.empty:
+                st.warning(f"No data for {selected_ts.isoformat()}")
+            else:
+                st.subheader(f"LMPs for Interval Containing {selected_ts.isoformat()}")
+                choro = plot_lmp_map(
+                    hourly,
+                    title=f"LMPs at {selected_ts.isoformat()}"
+                )
         else:
             choro = make_choropleth_threshold(df_for_map, max_priority_col, geofips_county_json, cmap)
         st.plotly_chart(choro, use_container_width=True)

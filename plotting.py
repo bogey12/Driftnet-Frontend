@@ -1,5 +1,6 @@
 import plotly.express as px
 import numpy as np
+import pandas as pd
 
 def filter_master_df(df, thresholds: dict):
     """
@@ -29,6 +30,24 @@ def get_cmap(max_priority_col):
         return "Teal"
     else:
         return "Viridis"
+    
+def get_selected_ts(date, hour):
+    """
+    Given a datetime.date and integer hour (0–23),
+    return a pandas.Timestamp localized to UTC.
+    """
+    ts = pd.Timestamp(date) + pd.Timedelta(hours=hour)
+    return ts.tz_localize("UTC")
+
+def filter_intervals(df, selected_ts):
+    """
+    Return the subset of `df` where selected_ts ∈ [interval_start_utc, interval_end_utc).
+    """
+    mask = (
+        (df['interval_start_utc'] <= selected_ts) &
+        (selected_ts < df['interval_end_utc'])
+    )
+    return df.loc[mask]
 
 def make_choropleth_county(input_df, input_col, input_label, geo_json, min_value, max_value, color_theme="Viridis"):
     choropleth = px.choropleth(input_df, geojson=geo_json, locations='fips', color=input_col,
@@ -135,5 +154,41 @@ def census_blockgroup_choropleth(gdf, max_priority, core_market, cmap, threshold
         paper_bgcolor='rgba(0, 0, 0, 0)',
         margin=dict(l=0, r=0, t=0, b=0),
         height=500
+    )
+    return fig
+
+def plot_lmp_map(hourly, title=None, dot_size=12):
+    """
+    Given a DataFrame `hourly` with columns latitude, longitude, lmp,
+    and interval_* columns, returns a Plotly Figure of the scatter_mapbox
+    with larger dot sizes.
+
+    Parameters:
+        hourly (pd.DataFrame): filtered data for one timestamp
+        title (str): optional title for the map
+        dot_size (int): marker size in pixels
+    """
+    fig = px.scatter_mapbox(
+        hourly,
+        lat="latitude",
+        lon="longitude",
+        color="lmp",
+        color_continuous_scale="Turbo",
+        zoom=4,
+        mapbox_style="open-street-map",
+        hover_data={
+            "lmp": ":.2f",
+            "interval_start_local": True,
+            "interval_end_local": True,
+            "interval_start_utc": True,
+            "interval_end_utc": True
+        }
+    )
+    # Override default marker size
+    fig.update_traces(marker_size=dot_size)
+    fig.update_layout(
+        margin={"r":0, "t":0, "l":0, "b":0},
+        height=600,
+        title=title
     )
     return fig
