@@ -127,8 +127,11 @@ with maps:
             st.warning("▶️ Pick at least one category above to continue.")
             st.stop()
 
-        min_thresholds = {}
-        st.markdown("2) For each selected category, set constraints and a minimum score (0–100)")
+        # --- Store and use per-category thresholds ---
+        # Initialize session state for thresholds if not present
+        if 'category_thresholds' not in st.session_state:
+            st.session_state['category_thresholds'] = {}
+        category_thresholds = st.session_state['category_thresholds']
 
         render_map = {
             "Power": render_power_constraints,
@@ -153,7 +156,9 @@ with maps:
             cat_res = render_map[selected_tab]()
             if cat_res and "overall_score" in cat_res:
                 overall_score = cat_res["overall_score"]
-                min_thresholds[col_name] = overall_score
+                # Store the threshold for this category in session state
+                category_thresholds[col_name] = overall_score
+                st.session_state['category_thresholds'] = category_thresholds
         # Tooltip/info for overall score
         st.markdown(
             f"**Overall {selected_tab} Score: {overall_score:.1f}/100** "
@@ -170,11 +175,6 @@ with maps:
             key=f"min_{col_name}",
             disabled=True
         )
-        # Multi-category filtering: set min thresholds for all other selected categories to 0 (or keep previous logic if needed)
-        for cat in selected_cats:
-            if cat != selected_tab:
-                col_other = f"{cat.lower()}_score"
-                min_thresholds[col_other] = 0
         st.markdown("3) Choose a category as Max Priority")
         max_priority = st.selectbox(
             "Max Priority ➤",
@@ -182,6 +182,8 @@ with maps:
             index=0
         )
         max_priority_col = f"{max_priority.lower()}_score"
+        # Use the stored thresholds for all selected categories
+        min_thresholds = {f"{cat.lower()}_score": category_thresholds.get(f"{cat.lower()}_score", 0) for cat in selected_cats}
         df_for_map = filter_master_df(df_master, min_thresholds)
         # Show site count/percentage for the active category
         total_sites = len(df_master)
@@ -210,20 +212,13 @@ with maps:
             # Use all selected categories' thresholds (AND logic)
             for cat in selected_cats:
                 col_map = f"{cat.lower()}_score"
-                if cat == selected_tab and overall_score is not None:
-                    map_thresholds[col_map] = overall_score
-                else:
-                    # For now, set to 0 if not being edited, but you could store previous values if desired
-                    map_thresholds[col_map] = 0
+                map_thresholds[col_map] = category_thresholds.get(col_map, 0)
             map_priority_col = max_priority_col
             cmap = "Cividis"  # Use a different color scheme for Combined
         else:
             # Only use the selected map category's threshold
             col_map = f"{selected_map.lower()}_score"
-            if selected_map == selected_tab and overall_score is not None:
-                map_thresholds[col_map] = overall_score
-            else:
-                map_thresholds[col_map] = 0
+            map_thresholds[col_map] = category_thresholds.get(col_map, 0)
             map_priority_col = col_map
             cmap = get_cmap(map_priority_col)
         df_for_map = filter_master_df(df_master, map_thresholds)
