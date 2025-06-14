@@ -109,12 +109,13 @@ with maps:
     with col[0]:
         st.markdown('### Constraints Explorer')
         st.markdown('Visualize data for data center planning')
+        #all_categories = ["Water", "Land", "Regulations", "Fiber", "Power"]
         show_core_only = st.checkbox("Show core connectivity markets only", value=False)
         if show_core_only:
             select_core_market = st.selectbox(
                 "Select Core Market",
                 options=list(CORE_MARKET_FIPS_DICT.keys()),
-                index=0
+                index=0  # Default to first option
             )
         all_categories = ["Power", "Fiber", "Land", "Regulations", "Climate Factors", "Future Scalability"]
         st.markdown("1) Select categories to filter (you can pick 1–5)")
@@ -127,54 +128,40 @@ with maps:
             st.warning("▶️ Pick at least one category above to continue.")
             st.stop()
 
-        min_thresholds = {}
-        st.markdown("2) For each selected category, set constraints and a minimum score (0–100)")
+        # 4b) For each chosen category, ask for a minimum‐score:
+        min_thresholds = {}  # e.g. {"Water": 80, "Land": 70, ...}
 
-        render_map = {
-            "Power": render_power_constraints,
-            "Land": render_land_constraints,
-            "Climate Factors": render_climate_constraints,
-            "Fiber": render_fiber_constraints,
-            "Future Scalability": render_future_constraints,
-            "Regulations": render_regulatory_constraints,
-        }
+        st.markdown("2) For each selected category, set a minimum score (0–100)")
 
-        # Tabbed navigation: only show one category's constraints at a time
-        selected_tab = st.radio(
-            "Choose a category to edit:",
-            selected_cats,
-            key="category_tab_radio"
-        )
-        col_name = f"{selected_tab.lower()}_score"
-        if selected_tab == "Power":
-            show_grid_lmp = st.checkbox("Show Grid LMP", value=False, help="Display the local grid's LMP (Locational Marginal Price) for power costs.")
-        overall_score = None
-        if selected_tab in render_map:
-            cat_res = render_map[selected_tab]()
-            if cat_res and "overall_score" in cat_res:
-                overall_score = cat_res["overall_score"]
-                min_thresholds[col_name] = overall_score
-        # Tooltip/info for overall score
-        st.markdown(
-            f"**Overall {selected_tab} Score: {overall_score:.1f}/100** "
-            + "<span title='This score is used to filter sites on the map. Only sites with a score at or above this value for the selected category are shown.' style='cursor: help;'>ℹ️</span>",
-            unsafe_allow_html=True
-        )
-        # Live filtering: set min score to overall score automatically
-        min_val = overall_score if overall_score is not None else 0
-        st.slider(
-            label=f"Minimum {selected_tab} score (auto-set to overall score)",
-            min_value=0,
-            max_value=100,
-            value=int(min_val),
-            key=f"min_{col_name}",
-            disabled=True
-        )
-        # Multi-category filtering: set min thresholds for all other selected categories to 0 (or keep previous logic if needed)
         for cat in selected_cats:
-            if cat != selected_tab:
-                col_other = f"{cat.lower()}_score"
-                min_thresholds[col_other] = 0
+            col_name = f"{cat.lower()}_score"
+            if cat == "Power":
+                show_grid_lmp = st.checkbox("Show Grid LMP", value=False, help="Display the local grid's LMP (Locational Marginal Price) for power costs.")
+            
+            # ADD CATEGORY DESCRIPTIONS
+            render_map = {
+                "Power": render_power_constraints,
+                "Land": render_land_constraints,
+                "Climate Factors": render_climate_constraints,
+                "Fiber": render_fiber_constraints,
+                "Future Scalability": render_future_constraints,
+                "Regulations": render_regulatory_constraints,
+            }
+
+            if cat in render_map:
+                cat_res = render_map[cat]()
+                if cat_res and "overall_score" in cat_res:
+                    min_thresholds[col_name] = cat_res["overall_score"]
+            
+            min_val = st.slider(
+                label=f"Minimum {cat} score",
+                min_value=0,
+                max_value=100,
+                value=0,
+                key=f"min_{col_name}"
+            )
+            min_thresholds[col_name] = min_val
+
         st.markdown("3) Choose a category as Max Priority")
         max_priority = st.selectbox(
             "Max Priority ➤",
@@ -183,52 +170,25 @@ with maps:
         )
         max_priority_col = f"{max_priority.lower()}_score"
         df_for_map = filter_master_df(df_master, min_thresholds)
-        # Show site count/percentage for the active category
-        total_sites = len(df_master)
-        passing_sites = df_for_map['passes'].notna().sum()
-        percent_passing = (passing_sites / total_sites) * 100 if total_sites > 0 else 0
-        st.markdown(f"**{passing_sites} sites ({percent_passing:.1f}%) meet your current {selected_tab} constraints.")
+        
         if show_core_only:
+            # Set color_val to NaN for non-core counties (they will appear white)
             all_fips = [fips for zips in CORE_MARKET_FIPS_DICT.values() for fips in zips]
             df_for_map['color_val'] = np.where(
-                df_for_map['fips'].isin(all_fips) & df_for_map['passes'].notna(),
-                df_for_map[max_priority_col],
+                df_for_map['fips'].isin(all_fips),
+                df_for_map[max_priority_col] * df_for_map['passes'],
                 np.nan
             )
+
         else:
-            # Highlight: color_val is the score if passing, else gray (or NaN)
-            df_for_map['color_val'] = np.where(df_for_map['passes'].notna(), df_for_map[max_priority_col], np.nan)
+            df_for_map['color_val'] = df_for_map[max_priority_col] * df_for_map['passes']
         cmap = get_cmap(max_priority_col)
 
-    # Map selector and rendering (always show a map)
     with col[1]:
-        map_options = all_categories + ["Combined"]
-        selected_map = st.radio("Which map do you want to view?", map_options, key="map_selector_radio", horizontal=True)
-        # Build thresholds for map filtering
-        map_thresholds = {}
-        if selected_map == "Combined":
-            # Use all selected categories' thresholds (AND logic)
-            for cat in selected_cats:
-                col_map = f"{cat.lower()}_score"
-                if cat == selected_tab and overall_score is not None:
-                    map_thresholds[col_map] = overall_score
-                else:
-                    # For now, set to 0 if not being edited, but you could store previous values if desired
-                    map_thresholds[col_map] = 0
-            map_priority_col = max_priority_col
-            cmap = "Cividis"  # Use a different color scheme for Combined
-        else:
-            # Only use the selected map category's threshold
-            col_map = f"{selected_map.lower()}_score"
-            if selected_map == selected_tab and overall_score is not None:
-                map_thresholds[col_map] = overall_score
-            else:
-                map_thresholds[col_map] = 0
-            map_priority_col = col_map
-            cmap = get_cmap(map_priority_col)
-        df_for_map = filter_master_df(df_master, map_thresholds)
-        st.markdown(f"### {selected_map} Map")
-        if selected_map == "Power" and 'show_grid_lmp' in locals() and show_grid_lmp:
+        st.markdown(f"### {max_priority} Score")
+        if show_core_only:
+            choro = census_blockgroup_choropleth(blockgroup_gdf, max_priority_col, select_core_market, cmap, min_thresholds, CORE_MARKET_FIPS_DICT)
+        elif show_grid_lmp == True:
             selected_date = st.date_input("Date", value=pd.to_datetime("2023-06-01").date())
             selected_hour = st.slider("Hour (UTC)", 0, 23, 0)
             selected_ts = get_selected_ts(selected_date, selected_hour)
@@ -242,7 +202,7 @@ with maps:
                     title=f"LMPs at {selected_ts.isoformat()}"
                 )
         else:
-            choro = make_choropleth_threshold(df_for_map, map_priority_col, geofips_county_json, cmap)
+            choro = make_choropleth_threshold(df_for_map, max_priority_col, geofips_county_json, cmap)
         st.plotly_chart(choro, use_container_width=True)
 
 with requirements:
@@ -365,5 +325,5 @@ with results:
         st.metric(label="Renewable %", value="95 %")
         st.caption("Of total generation")
 
-    # If you also want to show "Annual uptime" as text under the metrics:
+    # If you also want to show “Annual uptime” as text under the metrics:
     st.markdown("*Annual uptime based on projected operations and maintenance assumptions*")
