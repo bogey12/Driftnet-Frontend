@@ -132,7 +132,7 @@ with maps:
         min_thresholds = {}  # e.g. {"Water": 80, "Land": 70, ...}
 
         st.markdown("2) For each selected category, set a minimum score (0–100)")
-
+        show_grid_lmp = False
         for cat in selected_cats:
             col_name = f"{cat.lower()}_score"
             if cat == "Power":
