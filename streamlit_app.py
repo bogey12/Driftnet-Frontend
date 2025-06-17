@@ -161,8 +161,6 @@ with maps:
             )
             min_thresholds[col_name] = min_val
 
-<<<<<<< HEAD
-=======
         # Tabbed navigation: only show one category's constraints at a time
         selected_tab = st.radio(
             "Choose a category to edit:",
@@ -208,7 +206,6 @@ with maps:
 
         category_thresholds[col_name] = slider_val
 
->>>>>>> hannah-dev
         st.markdown("3) Choose a category as Max Priority")
         max_priority = st.selectbox(
             "Max Priority ➤",
@@ -232,12 +229,6 @@ with maps:
         cmap = get_cmap(max_priority_col)
 
     with col[1]:
-<<<<<<< HEAD
-        st.markdown(f"### {max_priority} Score")
-        if show_core_only:
-            choro = census_blockgroup_choropleth(blockgroup_gdf, max_priority_col, select_core_market, cmap, min_thresholds, CORE_MARKET_FIPS_DICT)
-        elif show_grid_lmp == True:
-=======
         map_options = all_categories + ["Combined"]
         selected_map = st.radio("Which map do you want to view?", map_options, key="map_selector_radio", horizontal=True)
         # Build thresholds for map filtering
@@ -260,7 +251,6 @@ with maps:
         if show_core_only:
             choro = census_blockgroup_choropleth(blockgroup_gdf, max_priority_col, select_core_market, cmap, min_thresholds, CORE_MARKET_FIPS_DICT)
         elif selected_map == "Power" and 'show_grid_lmp' in locals() and show_grid_lmp:
->>>>>>> hannah-dev
             selected_date = st.date_input("Date", value=pd.to_datetime("2023-06-01").date())
             selected_hour = st.slider("Hour (UTC)", 0, 23, 0)
             selected_ts = get_selected_ts(selected_date, selected_hour)
