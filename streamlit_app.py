@@ -164,16 +164,28 @@ with maps:
             + "<span title='This score is used to filter sites on the map. Only sites with a score at or above this value for the selected category are shown.' style='cursor: help;'>ℹ️</span>",
             unsafe_allow_html=True
         )
-        # Live filtering: set min score to overall score automatically
-        min_val = overall_score if overall_score is not None else 0
-        st.slider(
-            label=f"Minimum {selected_tab} score (auto-set to overall score)",
+        # --- Keys for session state ---
+        slider_key = f"min_{col_name}"
+
+        # --- Initialize slider value if not set ---
+        if slider_key not in st.session_state:
+            st.session_state[slider_key] = 0  # default start value
+
+        # --- Set slider to overall_score if button is clicked ---
+        if overall_score is not None and st.button("Set slider to overall score"):
+            st.session_state[slider_key] = int(overall_score)
+
+        # --- Render editable slider ---
+        slider_val = st.slider(
+            label=f"Minimum {selected_tab} score",
             min_value=0,
             max_value=100,
-            value=int(min_val),
-            key=f"min_{col_name}",
-            disabled=True
+            value=st.session_state[slider_key],
+            key=slider_key,
         )
+
+        category_thresholds[col_name] = slider_val
+
         st.markdown("3) Choose a category as Max Priority")
         max_priority = st.selectbox(
             "Max Priority ➤",
@@ -222,7 +234,9 @@ with maps:
             cmap = get_cmap(map_priority_col)
         df_for_map = filter_master_df(df_master, map_thresholds)
         st.markdown(f"### {selected_map} Map")
-        if selected_map == "Power" and 'show_grid_lmp' in locals() and show_grid_lmp:
+        if show_core_only:
+            choro = census_blockgroup_choropleth(blockgroup_gdf, max_priority_col, select_core_market, cmap, min_thresholds, CORE_MARKET_FIPS_DICT)
+        elif selected_map == "Power" and 'show_grid_lmp' in locals() and show_grid_lmp:
             selected_date = st.date_input("Date", value=pd.to_datetime("2023-06-01").date())
             selected_hour = st.slider("Hour (UTC)", 0, 23, 0)
             selected_ts = get_selected_ts(selected_date, selected_hour)
