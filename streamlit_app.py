@@ -44,7 +44,6 @@ from constraint_utils import (
     render_regulatory_constraints,
 )
 
-
 # 1) Page config
 st.set_page_config(**PAGE_SETTINGS)
 alt.themes.enable(ALT_THEME)
@@ -299,7 +298,6 @@ with results:
         st.metric(label="Reliability", value="99.99 %")
         st.caption("Projected uptime based on location and infrastructure")
 
-
     st.markdown("---")  # horizontal rule to separate sections
 
     # ---------------------
@@ -340,7 +338,6 @@ with results:
         st.plotly_chart(fig_gen, use_container_width=True)
     with col5:
         st.plotly_chart(fig_storage, use_container_width=True)
-
 
     st.markdown("---")  # separate again
 
