@@ -44,7 +44,6 @@ from constraint_utils import (
     render_regulatory_constraints,
 )
 
-
 # 1) Page config
 st.set_page_config(**PAGE_SETTINGS)
 alt.themes.enable(ALT_THEME)
@@ -162,6 +161,54 @@ with maps:
             )
             min_thresholds[col_name] = min_val
 
+<<<<<<< HEAD
+=======
+        # Tabbed navigation: only show one category's constraints at a time
+        selected_tab = st.radio(
+            "Choose a category to edit:",
+            selected_cats,
+            key="category_tab_radio"
+        )
+        col_name = f"{selected_tab.lower()}_score"
+        if selected_tab == "Power":
+            show_grid_lmp = st.checkbox("Show Grid LMP", value=False, help="Display the local grid's LMP (Locational Marginal Price) for power costs.")
+        overall_score = None
+        if selected_tab in render_map:
+            cat_res = render_map[selected_tab]()
+            if cat_res and "overall_score" in cat_res:
+                overall_score = cat_res["overall_score"]
+                # Store the threshold for this category in session state
+                category_thresholds[col_name] = overall_score
+                st.session_state['category_thresholds'] = category_thresholds
+        # Tooltip/info for overall score
+        st.markdown(
+            f"**Overall {selected_tab} Score: {overall_score:.1f}/100** "
+            + "<span title='This score is used to filter sites on the map. Only sites with a score at or above this value for the selected category are shown.' style='cursor: help;'>ℹ️</span>",
+            unsafe_allow_html=True
+        )
+        # --- Keys for session state ---
+        slider_key = f"min_{col_name}"
+
+        # --- Initialize slider value if not set ---
+        if slider_key not in st.session_state:
+            st.session_state[slider_key] = 0  # default start value
+
+        # --- Set slider to overall_score if button is clicked ---
+        if overall_score is not None and st.button("Set slider to overall score"):
+            st.session_state[slider_key] = int(overall_score)
+
+        # --- Render editable slider ---
+        slider_val = st.slider(
+            label=f"Minimum {selected_tab} score",
+            min_value=0,
+            max_value=100,
+            value=st.session_state[slider_key],
+            key=slider_key,
+        )
+
+        category_thresholds[col_name] = slider_val
+
+>>>>>>> hannah-dev
         st.markdown("3) Choose a category as Max Priority")
         max_priority = st.selectbox(
             "Max Priority ➤",
@@ -185,10 +232,35 @@ with maps:
         cmap = get_cmap(max_priority_col)
 
     with col[1]:
+<<<<<<< HEAD
         st.markdown(f"### {max_priority} Score")
         if show_core_only:
             choro = census_blockgroup_choropleth(blockgroup_gdf, max_priority_col, select_core_market, cmap, min_thresholds, CORE_MARKET_FIPS_DICT)
         elif show_grid_lmp == True:
+=======
+        map_options = all_categories + ["Combined"]
+        selected_map = st.radio("Which map do you want to view?", map_options, key="map_selector_radio", horizontal=True)
+        # Build thresholds for map filtering
+        map_thresholds = {}
+        if selected_map == "Combined":
+            # Use all selected categories' thresholds (AND logic)
+            for cat in selected_cats:
+                col_map = f"{cat.lower()}_score"
+                map_thresholds[col_map] = category_thresholds.get(col_map, 0)
+            map_priority_col = max_priority_col
+            cmap = "Cividis"  # Use a different color scheme for Combined
+        else:
+            # Only use the selected map category's threshold
+            col_map = f"{selected_map.lower()}_score"
+            map_thresholds[col_map] = category_thresholds.get(col_map, 0)
+            map_priority_col = col_map
+            cmap = get_cmap(map_priority_col)
+        df_for_map = filter_master_df(df_master, map_thresholds)
+        st.markdown(f"### {selected_map} Map")
+        if show_core_only:
+            choro = census_blockgroup_choropleth(blockgroup_gdf, max_priority_col, select_core_market, cmap, min_thresholds, CORE_MARKET_FIPS_DICT)
+        elif selected_map == "Power" and 'show_grid_lmp' in locals() and show_grid_lmp:
+>>>>>>> hannah-dev
             selected_date = st.date_input("Date", value=pd.to_datetime("2023-06-01").date())
             selected_hour = st.slider("Hour (UTC)", 0, 23, 0)
             selected_ts = get_selected_ts(selected_date, selected_hour)
@@ -264,7 +336,6 @@ with results:
         st.metric(label="Reliability", value="99.99 %")
         st.caption("Projected uptime based on location and infrastructure")
 
-
     st.markdown("---")  # horizontal rule to separate sections
 
     # ---------------------
@@ -305,7 +376,6 @@ with results:
         st.plotly_chart(fig_gen, use_container_width=True)
     with col5:
         st.plotly_chart(fig_storage, use_container_width=True)
-
 
     st.markdown("---")  # separate again
 
