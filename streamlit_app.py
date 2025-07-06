@@ -2,9 +2,11 @@
 # Import libraries
 import streamlit as st
 import pandas as pd
+import json
 import altair as alt
 import plotly.express as px
 import numpy as np
+import pydeck as pdk
 
 # Import our custom modules
 from config import CORE_MARKET_FIPS_DICT, PAGE_SETTINGS, ALT_THEME
@@ -32,7 +34,8 @@ from plotting import (
     get_cmap,
     census_blockgroup_choropleth,
     make_choropleth_threshold,
-    get_selected_ts, filter_intervals, plot_lmp_map
+    get_selected_ts, filter_intervals, plot_lmp_map,
+    build_fiber_layers
 )
 
 from constraint_utils import (
@@ -83,6 +86,13 @@ def load_lmp(lmp_path: str):
     # adjust path if needed
     return pd.read_parquet(lmp_path)
 
+@st.cache_data
+def load_fiber_backbone(data_path: str):
+    # adjust path if needed
+    with open(data_path, 'r') as f:
+        geojson_data = json.load(f)
+    return geojson_data
+
 # 2) Then use those cached wrappers in your main code
 df_master = get_score_data(
     grid_path="data/doe_grid_constraints.csv",
@@ -97,6 +107,8 @@ blockgroup_gdf, geofips_county_json = get_geo_data(
 )
 
 df_lmp = load_lmp(lmp_path="data/gridstatus_lmp_samples.parquet")
+
+fiber_backbone_data = load_fiber_backbone(data_path="data/synthetic_us_longhaul_fiber_dense.geojson")
 
 #######################
 # Define tabs
@@ -150,6 +162,8 @@ with maps:
         col_name = f"{selected_tab.lower()}_score"
         if selected_tab == "Power":
             show_grid_lmp = st.checkbox("Show Grid LMP", value=False, help="Display the local grid's LMP (Locational Marginal Price) for power costs.")
+        elif selected_tab == "Fiber":
+            show_fiber_backbone = st.checkbox("Show Fiber Backbone", value=False, help="Display the fiber backbone network on the map.")
         overall_score = None
         if selected_tab in render_map:
             cat_res = render_map[selected_tab]()
@@ -249,9 +263,23 @@ with maps:
                     hourly,
                     title=f"LMPs at {selected_ts.isoformat()}"
                 )
+            st.plotly_chart(choro, use_container_width=True)
+
+        elif selected_map == "Fiber" and 'show_fiber_backbone' in locals() and show_fiber_backbone:
+            layers = build_fiber_layers(fiber_backbone_data, line_width=3)
+            deck = pdk.Deck(
+                layers=layers,
+                initial_view_state=pdk.ViewState(
+                    latitude=39.5, longitude=-98.5, zoom=3.3, pitch=0, bearing=0
+                ),
+                map_provider="carto",
+                map_style="light",
+                tooltip={"text": "{endpoints}{node_name}"},
+            )
+            st.pydeck_chart(deck)
         else:
             choro = make_choropleth_threshold(df_for_map, map_priority_col, geofips_county_json, cmap)
-        st.plotly_chart(choro, use_container_width=True)
+            st.plotly_chart(choro, use_container_width=True)
 
 with requirements:
     st.header("Requirements")
@@ -321,8 +349,8 @@ with results:
 
     # 1) Build two small DataFrames for the pie charts
     gen_data = pd.DataFrame({
-        "Source": ["Solar", "Wind", "Hydro", "Geothermal", "Nuclear"],
-        "Percentage": [45, 35, 10, 5, 5]
+        "Source": ["Grid", "Natural Gas", "Solar", "Wind", "Other"],
+        "Percentage": [55, 25, 10, 5, 5]
     })
 
     storage_data = pd.DataFrame({

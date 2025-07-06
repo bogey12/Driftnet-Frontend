@@ -1,0 +1,2714 @@
+{
+  "type": "FeatureCollection",
+  "name": "synthetic_us_longhaul_fiber_dense",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC::CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.3321,
+          47.6062
+        ]
+      },
+      "properties": {
+        "node_name": "Seattle",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.9007,
+          47.0379
+        ]
+      },
+      "properties": {
+        "node_name": "Olympia",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.426,
+          47.6588
+        ]
+      },
+      "properties": {
+        "node_name": "Spokane",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.6784,
+          45.5152
+        ]
+      },
+      "properties": {
+        "node_name": "Portland",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -116.2023,
+          43.615
+        ]
+      },
+      "properties": {
+        "node_name": "Boise",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -113.994,
+          46.8721
+        ]
+      },
+      "properties": {
+        "node_name": "Missoula",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -108.5007,
+          45.7833
+        ]
+      },
+      "properties": {
+        "node_name": "Billings",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -111.891,
+          40.7608
+        ]
+      },
+      "properties": {
+        "node_name": "Salt Lake City",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -119.8138,
+          39.5296
+        ]
+      },
+      "properties": {
+        "node_name": "Reno",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.4944,
+          38.5816
+        ]
+      },
+      "properties": {
+        "node_name": "Sacramento",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.4194,
+          37.7749
+        ]
+      },
+      "properties": {
+        "node_name": "San Francisco",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.8863,
+          37.3382
+        ]
+      },
+      "properties": {
+        "node_name": "San Jose",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.2437,
+          34.0522
+        ]
+      },
+      "properties": {
+        "node_name": "Los Angeles",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.1611,
+          32.7157
+        ]
+      },
+      "properties": {
+        "node_name": "San Diego",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -115.1398,
+          36.1699
+        ]
+      },
+      "properties": {
+        "node_name": "Las Vegas",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.074,
+          33.4484
+        ]
+      },
+      "properties": {
+        "node_name": "Phoenix",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -110.9747,
+          32.2226
+        ]
+      },
+      "properties": {
+        "node_name": "Tucson",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -111.6513,
+          35.1983
+        ]
+      },
+      "properties": {
+        "node_name": "Flagstaff",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -106.6504,
+          35.0844
+        ]
+      },
+      "properties": {
+        "node_name": "Albuquerque",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.9903,
+          39.7392
+        ]
+      },
+      "properties": {
+        "node_name": "Denver",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.8214,
+          38.8339
+        ]
+      },
+      "properties": {
+        "node_name": "Colorado Springs",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.8202,
+          41.14
+        ]
+      },
+      "properties": {
+        "node_name": "Cheyenne",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -103.231,
+          44.0805
+        ]
+      },
+      "properties": {
+        "node_name": "Rapid City",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -111.0429,
+          45.677
+        ]
+      },
+      "properties": {
+        "node_name": "Bozeman",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.7311,
+          43.5446
+        ]
+      },
+      "properties": {
+        "node_name": "Sioux Falls",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.7898,
+          46.8772
+        ]
+      },
+      "properties": {
+        "node_name": "Fargo",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.9345,
+          41.2565
+        ]
+      },
+      "properties": {
+        "node_name": "Omaha",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.7026,
+          40.8136
+        ]
+      },
+      "properties": {
+        "node_name": "Lincoln",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -93.625,
+          41.5868
+        ]
+      },
+      "properties": {
+        "node_name": "Des Moines",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -94.5786,
+          39.0997
+        ]
+      },
+      "properties": {
+        "node_name": "Kansas City",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -90.1994,
+          38.627
+        ]
+      },
+      "properties": {
+        "node_name": "St Louis",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.9928,
+          36.15398
+        ]
+      },
+      "properties": {
+        "node_name": "Tulsa",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.5164,
+          35.4676
+        ]
+      },
+      "properties": {
+        "node_name": "Oklahoma City",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.797,
+          32.7767
+        ]
+      },
+      "properties": {
+        "node_name": "Dallas",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.3308,
+          32.7555
+        ]
+      },
+      "properties": {
+        "node_name": "Fort Worth",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.7431,
+          30.2672
+        ]
+      },
+      "properties": {
+        "node_name": "Austin",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.4936,
+          29.4241
+        ]
+      },
+      "properties": {
+        "node_name": "San Antonio",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.3698,
+          29.7604
+        ]
+      },
+      "properties": {
+        "node_name": "Houston",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -106.485,
+          31.7619
+        ]
+      },
+      "properties": {
+        "node_name": "El Paso",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -90.0715,
+          29.9511
+        ]
+      },
+      "properties": {
+        "node_name": "New Orleans",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -91.1871,
+          30.4515
+        ]
+      },
+      "properties": {
+        "node_name": "Baton Rouge",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -90.049,
+          35.1495
+        ]
+      },
+      "properties": {
+        "node_name": "Memphis",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -92.2896,
+          34.7465
+        ]
+      },
+      "properties": {
+        "node_name": "Little Rock",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.8104,
+          33.5186
+        ]
+      },
+      "properties": {
+        "node_name": "Birmingham",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.388,
+          33.749
+        ]
+      },
+      "properties": {
+        "node_name": "Atlanta",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -81.6557,
+          30.3322
+        ]
+      },
+      "properties": {
+        "node_name": "Jacksonville",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -81.3792,
+          28.5383
+        ]
+      },
+      "properties": {
+        "node_name": "Orlando",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.4572,
+          27.9506
+        ]
+      },
+      "properties": {
+        "node_name": "Tampa",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.1918,
+          25.7617
+        ]
+      },
+      "properties": {
+        "node_name": "Miami",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.8431,
+          35.2271
+        ]
+      },
+      "properties": {
+        "node_name": "Charlotte",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.6382,
+          35.7796
+        ]
+      },
+      "properties": {
+        "node_name": "Raleigh",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.436,
+          37.5407
+        ]
+      },
+      "properties": {
+        "node_name": "Richmond",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.0369,
+          38.9072
+        ]
+      },
+      "properties": {
+        "node_name": "Washington DC",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6122,
+          39.2904
+        ]
+      },
+      "properties": {
+        "node_name": "Baltimore",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.1652,
+          39.9526
+        ]
+      },
+      "properties": {
+        "node_name": "Philadelphia",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.006,
+          40.7128
+        ]
+      },
+      "properties": {
+        "node_name": "New York City",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -72.6734,
+          41.7658
+        ]
+      },
+      "properties": {
+        "node_name": "Hartford",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.4128,
+          41.824
+        ]
+      },
+      "properties": {
+        "node_name": "Providence",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.0589,
+          42.3601
+        ]
+      },
+      "properties": {
+        "node_name": "Boston",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.2568,
+          43.6591
+        ]
+      },
+      "properties": {
+        "node_name": "Portland ME",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.9959,
+          40.4406
+        ]
+      },
+      "properties": {
+        "node_name": "Pittsburgh",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -81.6944,
+          41.4993
+        ]
+      },
+      "properties": {
+        "node_name": "Cleveland",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.0458,
+          42.3314
+        ]
+      },
+      "properties": {
+        "node_name": "Detroit",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.6681,
+          42.9634
+        ]
+      },
+      "properties": {
+        "node_name": "Grand Rapids",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.9988,
+          39.9612
+        ]
+      },
+      "properties": {
+        "node_name": "Columbus",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.512,
+          39.1031
+        ]
+      },
+      "properties": {
+        "node_name": "Cincinnati",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1581,
+          39.7684
+        ]
+      },
+      "properties": {
+        "node_name": "Indianapolis",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.7585,
+          38.2527
+        ]
+      },
+      "properties": {
+        "node_name": "Louisville",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.7816,
+          36.1627
+        ]
+      },
+      "properties": {
+        "node_name": "Nashville",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.8784,
+          42.8864
+        ]
+      },
+      "properties": {
+        "node_name": "Buffalo",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.6088,
+          43.1566
+        ]
+      },
+      "properties": {
+        "node_name": "Rochester",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.1474,
+          43.0481
+        ]
+      },
+      "properties": {
+        "node_name": "Syracuse",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.7562,
+          42.6526
+        ]
+      },
+      "properties": {
+        "node_name": "Albany",
+        "type": "Node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -122.3321,
+            47.6062
+          ],
+          [
+            -122.9007,
+            47.0379
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0001",
+        "endpoints": "Seattle \u2013 Olympia",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -122.9007,
+            47.0379
+          ],
+          [
+            -122.6784,
+            45.5152
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0002",
+        "endpoints": "Olympia \u2013 Portland",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -122.6784,
+            45.5152
+          ],
+          [
+            -121.4944,
+            38.5816
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0003",
+        "endpoints": "Portland \u2013 Sacramento",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -121.4944,
+            38.5816
+          ],
+          [
+            -122.4194,
+            37.7749
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0004",
+        "endpoints": "Sacramento \u2013 San Francisco",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -122.4194,
+            37.7749
+          ],
+          [
+            -121.8863,
+            37.3382
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0005",
+        "endpoints": "San Francisco \u2013 San Jose",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -121.8863,
+            37.3382
+          ],
+          [
+            -118.2437,
+            34.0522
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0006",
+        "endpoints": "San Jose \u2013 Los Angeles",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -118.2437,
+            34.0522
+          ],
+          [
+            -117.1611,
+            32.7157
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0007",
+        "endpoints": "Los Angeles \u2013 San Diego",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -118.2437,
+            34.0522
+          ],
+          [
+            -112.074,
+            33.4484
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0008",
+        "endpoints": "Los Angeles \u2013 Phoenix",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -112.074,
+            33.4484
+          ],
+          [
+            -110.9747,
+            32.2226
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0009",
+        "endpoints": "Phoenix \u2013 Tucson",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -110.9747,
+            32.2226
+          ],
+          [
+            -106.485,
+            31.7619
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0010",
+        "endpoints": "Tucson \u2013 El Paso",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -106.485,
+            31.7619
+          ],
+          [
+            -98.4936,
+            29.4241
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0011",
+        "endpoints": "El Paso \u2013 San Antonio",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.4936,
+            29.4241
+          ],
+          [
+            -95.3698,
+            29.7604
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0012",
+        "endpoints": "San Antonio \u2013 Houston",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -95.3698,
+            29.7604
+          ],
+          [
+            -90.0715,
+            29.9511
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0013",
+        "endpoints": "Houston \u2013 New Orleans",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -90.0715,
+            29.9511
+          ],
+          [
+            -81.6557,
+            30.3322
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0014",
+        "endpoints": "New Orleans \u2013 Jacksonville",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -81.6557,
+            30.3322
+          ],
+          [
+            -81.3792,
+            28.5383
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0015",
+        "endpoints": "Jacksonville \u2013 Orlando",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -81.3792,
+            28.5383
+          ],
+          [
+            -82.4572,
+            27.9506
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0016",
+        "endpoints": "Orlando \u2013 Tampa",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -82.4572,
+            27.9506
+          ],
+          [
+            -80.1918,
+            25.7617
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0017",
+        "endpoints": "Tampa \u2013 Miami",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -122.4194,
+            37.7749
+          ],
+          [
+            -119.8138,
+            39.5296
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0018",
+        "endpoints": "San Francisco \u2013 Reno",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -119.8138,
+            39.5296
+          ],
+          [
+            -111.891,
+            40.7608
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0019",
+        "endpoints": "Reno \u2013 Salt Lake City",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -111.891,
+            40.7608
+          ],
+          [
+            -104.8202,
+            41.14
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0020",
+        "endpoints": "Salt Lake City \u2013 Cheyenne",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -104.8202,
+            41.14
+          ],
+          [
+            -104.9903,
+            39.7392
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0021",
+        "endpoints": "Cheyenne \u2013 Denver",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -104.9903,
+            39.7392
+          ],
+          [
+            -95.9345,
+            41.2565
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0022",
+        "endpoints": "Denver \u2013 Omaha",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -95.9345,
+            41.2565
+          ],
+          [
+            -93.625,
+            41.5868
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0023",
+        "endpoints": "Omaha \u2013 Des Moines",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -81.6944,
+            41.4993
+          ],
+          [
+            -78.8784,
+            42.8864
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0026",
+        "endpoints": "Cleveland \u2013 Buffalo",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -78.8784,
+            42.8864
+          ],
+          [
+            -76.1474,
+            43.0481
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0027",
+        "endpoints": "Buffalo \u2013 Syracuse",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -76.1474,
+            43.0481
+          ],
+          [
+            -73.7562,
+            42.6526
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0028",
+        "endpoints": "Syracuse \u2013 Albany",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.7562,
+            42.6526
+          ],
+          [
+            -71.0589,
+            42.3601
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0029",
+        "endpoints": "Albany \u2013 Boston",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -122.3321,
+            47.6062
+          ],
+          [
+            -117.426,
+            47.6588
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0030",
+        "endpoints": "Seattle \u2013 Spokane",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -117.426,
+            47.6588
+          ],
+          [
+            -113.994,
+            46.8721
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0031",
+        "endpoints": "Spokane \u2013 Missoula",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -113.994,
+            46.8721
+          ],
+          [
+            -108.5007,
+            45.7833
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0032",
+        "endpoints": "Missoula \u2013 Billings",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -108.5007,
+            45.7833
+          ],
+          [
+            -103.231,
+            44.0805
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0033",
+        "endpoints": "Billings \u2013 Rapid City",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -103.231,
+            44.0805
+          ],
+          [
+            -96.7311,
+            43.5446
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0034",
+        "endpoints": "Rapid City \u2013 Sioux Falls",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -96.7311,
+            43.5446
+          ],
+          [
+            -96.7898,
+            46.8772
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0035",
+        "endpoints": "Sioux Falls \u2013 Fargo",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -118.2437,
+            34.0522
+          ],
+          [
+            -111.6513,
+            35.1983
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0040",
+        "endpoints": "Los Angeles \u2013 Flagstaff",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -111.6513,
+            35.1983
+          ],
+          [
+            -106.6504,
+            35.0844
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0041",
+        "endpoints": "Flagstaff \u2013 Albuquerque",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -106.6504,
+            35.0844
+          ],
+          [
+            -97.5164,
+            35.4676
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0042",
+        "endpoints": "Albuquerque \u2013 Oklahoma City",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -97.5164,
+            35.4676
+          ],
+          [
+            -92.2896,
+            34.7465
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0043",
+        "endpoints": "Oklahoma City \u2013 Little Rock",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -92.2896,
+            34.7465
+          ],
+          [
+            -90.049,
+            35.1495
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0044",
+        "endpoints": "Little Rock \u2013 Memphis",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -90.049,
+            35.1495
+          ],
+          [
+            -86.7816,
+            36.1627
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0045",
+        "endpoints": "Memphis \u2013 Nashville",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -86.7816,
+            36.1627
+          ],
+          [
+            -80.8431,
+            35.2271
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0046",
+        "endpoints": "Nashville \u2013 Charlotte",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -80.8431,
+            35.2271
+          ],
+          [
+            -77.436,
+            37.5407
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0047",
+        "endpoints": "Charlotte \u2013 Richmond",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -98.4936,
+            29.4241
+          ],
+          [
+            -97.7431,
+            30.2672
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0048",
+        "endpoints": "San Antonio \u2013 Austin",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -97.7431,
+            30.2672
+          ],
+          [
+            -96.797,
+            32.7767
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0049",
+        "endpoints": "Austin \u2013 Dallas",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -96.797,
+            32.7767
+          ],
+          [
+            -97.5164,
+            35.4676
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0050",
+        "endpoints": "Dallas \u2013 Oklahoma City",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -97.5164,
+            35.4676
+          ],
+          [
+            -94.5786,
+            39.0997
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0051",
+        "endpoints": "Oklahoma City \u2013 Kansas City",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -94.5786,
+            39.0997
+          ],
+          [
+            -93.625,
+            41.5868
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0052",
+        "endpoints": "Kansas City \u2013 Des Moines",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -80.1918,
+            25.7617
+          ],
+          [
+            -81.6557,
+            30.3322
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0054",
+        "endpoints": "Miami \u2013 Jacksonville",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -81.6557,
+            30.3322
+          ],
+          [
+            -80.8431,
+            35.2271
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0055",
+        "endpoints": "Jacksonville \u2013 Charlotte",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -80.8431,
+            35.2271
+          ],
+          [
+            -77.436,
+            37.5407
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0056",
+        "endpoints": "Charlotte \u2013 Richmond",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -77.436,
+            37.5407
+          ],
+          [
+            -77.0369,
+            38.9072
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0057",
+        "endpoints": "Richmond \u2013 Washington DC",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -77.0369,
+            38.9072
+          ],
+          [
+            -76.6122,
+            39.2904
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0058",
+        "endpoints": "Washington DC \u2013 Baltimore",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -76.6122,
+            39.2904
+          ],
+          [
+            -75.1652,
+            39.9526
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0059",
+        "endpoints": "Baltimore \u2013 Philadelphia",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -75.1652,
+            39.9526
+          ],
+          [
+            -74.006,
+            40.7128
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0060",
+        "endpoints": "Philadelphia \u2013 New York City",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -74.006,
+            40.7128
+          ],
+          [
+            -72.6734,
+            41.7658
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0061",
+        "endpoints": "New York City \u2013 Hartford",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -72.6734,
+            41.7658
+          ],
+          [
+            -71.4128,
+            41.824
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0062",
+        "endpoints": "Hartford \u2013 Providence",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -71.4128,
+            41.824
+          ],
+          [
+            -71.0589,
+            42.3601
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0063",
+        "endpoints": "Providence \u2013 Boston",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -71.0589,
+            42.3601
+          ],
+          [
+            -70.2568,
+            43.6591
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0064",
+        "endpoints": "Boston \u2013 Portland ME",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -83.0458,
+            42.3314
+          ],
+          [
+            -85.6681,
+            42.9634
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0066",
+        "endpoints": "Detroit \u2013 Grand Rapids",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -86.1581,
+            39.7684
+          ],
+          [
+            -84.512,
+            39.1031
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0069",
+        "endpoints": "Indianapolis \u2013 Cincinnati",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -84.512,
+            39.1031
+          ],
+          [
+            -82.9988,
+            39.9612
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0070",
+        "endpoints": "Cincinnati \u2013 Columbus",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -82.9988,
+            39.9612
+          ],
+          [
+            -79.9959,
+            40.4406
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0071",
+        "endpoints": "Columbus \u2013 Pittsburgh",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -79.9959,
+            40.4406
+          ],
+          [
+            -81.6944,
+            41.4993
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0072",
+        "endpoints": "Pittsburgh \u2013 Cleveland",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -84.388,
+            33.749
+          ],
+          [
+            -86.8104,
+            33.5186
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0073",
+        "endpoints": "Atlanta \u2013 Birmingham",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -86.8104,
+            33.5186
+          ],
+          [
+            -90.049,
+            35.1495
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0074",
+        "endpoints": "Birmingham \u2013 Memphis",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -84.388,
+            33.749
+          ],
+          [
+            -80.8431,
+            35.2271
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0075",
+        "endpoints": "Atlanta \u2013 Charlotte",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -84.388,
+            33.749
+          ],
+          [
+            -81.6557,
+            30.3322
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0076",
+        "endpoints": "Atlanta \u2013 Jacksonville",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -112.074,
+            33.4484
+          ],
+          [
+            -115.1398,
+            36.1699
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0077",
+        "endpoints": "Phoenix \u2013 Las Vegas",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -115.1398,
+            36.1699
+          ],
+          [
+            -118.2437,
+            34.0522
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0078",
+        "endpoints": "Las Vegas \u2013 Los Angeles",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -111.891,
+            40.7608
+          ],
+          [
+            -104.9903,
+            39.7392
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0079",
+        "endpoints": "Salt Lake City \u2013 Denver",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -104.9903,
+            39.7392
+          ],
+          [
+            -104.8214,
+            38.8339
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0080",
+        "endpoints": "Denver \u2013 Colorado Springs",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -104.8214,
+            38.8339
+          ],
+          [
+            -106.6504,
+            35.0844
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0081",
+        "endpoints": "Colorado Springs \u2013 Albuquerque",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -94.5786,
+            39.0997
+          ],
+          [
+            -90.1994,
+            38.627
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0082",
+        "endpoints": "Kansas City \u2013 St Louis",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -90.1994,
+            38.627
+          ],
+          [
+            -86.1581,
+            39.7684
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0083",
+        "endpoints": "St Louis \u2013 Indianapolis",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -90.1994,
+            38.627
+          ],
+          [
+            -90.049,
+            35.1495
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0084",
+        "endpoints": "St Louis \u2013 Memphis",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -94.5786,
+            39.0997
+          ],
+          [
+            -95.9345,
+            41.2565
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0085",
+        "endpoints": "Kansas City \u2013 Omaha",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -95.9345,
+            41.2565
+          ],
+          [
+            -96.7026,
+            40.8136
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0086",
+        "endpoints": "Omaha \u2013 Lincoln",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -96.797,
+            32.7767
+          ],
+          [
+            -97.3308,
+            32.7555
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0087",
+        "endpoints": "Dallas \u2013 Fort Worth",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -97.3308,
+            32.7555
+          ],
+          [
+            -95.3698,
+            29.7604
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0088",
+        "endpoints": "Fort Worth \u2013 Houston",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -95.3698,
+            29.7604
+          ],
+          [
+            -91.1871,
+            30.4515
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0089",
+        "endpoints": "Houston \u2013 Baton Rouge",
+        "type": "Long-haul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -91.1871,
+            30.4515
+          ],
+          [
+            -90.0715,
+            29.9511
+          ]
+        ]
+      },
+      "properties": {
+        "route_id": "R0090",
+        "endpoints": "Baton Rouge \u2013 New Orleans",
+        "type": "Long-haul"
+      }
+    }
+  ]
+}

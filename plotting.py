@@ -1,6 +1,7 @@
 import plotly.express as px
 import numpy as np
 import pandas as pd
+import pydeck as pdk
 
 def filter_master_df(df, thresholds: dict):
     """
@@ -192,3 +193,52 @@ def plot_lmp_map(hourly, title=None, dot_size=12):
         title=title
     )
     return fig
+
+# ───────────────────────────────────────────────────────────────────
+# Helper: build PyDeck layers from ANY GeoJSON with points & lines
+# ───────────────────────────────────────────────────────────────────
+def build_fiber_layers(geojson_obj, line_width=3):
+    """Return [routes_layer, nodes_layer] from a FeatureCollection.
+
+    * routes  → GeoJsonLayer with a minimum 2-pixel stroke so it always shows
+    * nodes   → GeoJsonLayer with circle markers
+    """
+    nodes, routes = {"type": "FeatureCollection", "features": []}, {
+        "type": "FeatureCollection", "features": []
+    }
+
+    for f in geojson_obj["features"]:
+        if f["geometry"]["type"] in ("LineString", "MultiLineString"):
+            routes["features"].append(f)
+        elif f["geometry"]["type"] == "Point":
+            nodes["features"].append(f)
+
+    layers = []
+    if routes["features"]:
+        layers.append(
+            pdk.Layer(
+                "GeoJsonLayer",
+                routes,
+                pickable=True,
+                auto_highlight=True,
+                stroked=True,
+                get_line_color=[255, 255, 0],        # bright yellow
+                get_line_width=line_width,
+                line_width_units="pixels",            # <── important
+                line_width_min_pixels=2,              # <── avoids 0-px lines
+            )
+        )
+
+    if nodes["features"]:
+        layers.append(
+            pdk.Layer(
+                "GeoJsonLayer",
+                nodes,
+                pickable=True,
+                auto_highlight=True,
+                get_fill_color=[0, 120, 255],         # blue
+                get_radius=10_000,
+            )
+        )
+
+    return layers
