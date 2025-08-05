@@ -1,12 +1,14 @@
 #######################
 # Import libraries
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import json
 import altair as alt
 import plotly.express as px
 import numpy as np
 import pydeck as pdk
+from pathlib import Path
 
 # Import our custom modules
 from config import CORE_MARKET_FIPS_DICT, PAGE_SETTINGS, ALT_THEME
@@ -110,9 +112,13 @@ df_lmp = load_lmp(lmp_path="data/gridstatus_lmp_samples.parquet")
 
 fiber_backbone_data = load_fiber_backbone(data_path="data/synthetic_us_longhaul_fiber_dense.geojson")
 
+# california map html
+MAP_FILE = Path("data/california_map.html")
+MAP_HTML = MAP_FILE.read_text(encoding="utf-8")
+
 #######################
 # Define tabs
-maps, requirements, requirments_summary, results = st.tabs(["Map", "Requirements", "Requirements Summary", "Results"])
+maps, cal_map, requirements, requirements_summary, results = st.tabs(["Map", "California Map", "Requirements", "Requirements Summary", "Results"])
 
 with maps:
     col = st.columns((1.5, 6.5), gap='medium')
@@ -131,12 +137,9 @@ with maps:
         st.markdown("1) Select categories to filter (you can pick 1–5)")
         selected_cats = st.multiselect(
             "",
-            options=all_categories
+            options=all_categories,
+            default=["Power"] 
         )
-
-        if not selected_cats:
-            st.warning("▶️ Pick at least one category above to continue.")
-            st.stop()
 
         # --- Store and use per-category thresholds ---
         # Initialize session state for thresholds if not present
@@ -281,6 +284,20 @@ with maps:
             choro = make_choropleth_threshold(df_for_map, map_priority_col, geofips_county_json, cmap)
             st.plotly_chart(choro, use_container_width=True)
 
+with cal_map:
+    components.html(
+        MAP_HTML,
+        height=700,             # tweak height as you like
+        scrolling=False
+    )
+
+    # 2-B) Add a link that opens the same file in a new tab
+    st.markdown(
+        f'<a href="{MAP_FILE.as_posix()}" target="_blank" rel="noopener">'
+        '🔗 Open full-screen map</a>',
+        unsafe_allow_html=True
+    )
+
 with requirements:
     st.header("Requirements")
     region, city = render_region_site()
@@ -295,7 +312,7 @@ with requirements:
     generation_sources, storage_technologies = render_generation_storage()
     water_constraints, land_constraints, custom_constraints = render_site_constraints()
 
-with requirments_summary:
+with requirements_summary:
     display_results_summary_two_columns(
         region=region,
         city=city,
