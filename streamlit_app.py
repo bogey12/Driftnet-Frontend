@@ -252,7 +252,9 @@ with maps:
         df_for_map = filter_master_df(df_master, map_thresholds)
         st.markdown(f"### {selected_map} Map")
         if show_core_only:
+            print("HI")
             choro = census_blockgroup_choropleth(blockgroup_gdf, max_priority_col, select_core_market, cmap, min_thresholds, CORE_MARKET_FIPS_DICT)
+            st.plotly_chart(choro, use_container_width=True)
         elif selected_map == "Power" and 'show_grid_lmp' in locals() and show_grid_lmp:
             selected_date = st.date_input("Date", value=pd.to_datetime("2023-06-01").date())
             selected_hour = st.slider("Hour (UTC)", 0, 23, 0)
