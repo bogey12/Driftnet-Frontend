@@ -25,99 +25,43 @@ def load_projects(path: str) -> pd.DataFrame:
 
 @st.cache_data(show_spinner=False)
 def load_county_crosswalk() -> pd.DataFrame:
-    """Return columns: fips, state_clean, county_clean, name, state"""
-    UA = {"User-Agent": "interconnection-fyi/1.0"}
-    # 1) try GitHub (handle messy encodings)
-    gh_url = "https://raw.githubusercontent.com/kjhealy/fips-codes/master/county_fips_master.csv"
-    try:
-        r = requests.get(gh_url, headers=UA, timeout=30)
-        r.raise_for_status()
-        content = r.content
-        for enc in ("utf-8", "utf-8-sig", "latin-1", "cp1252"):
-            try:
-                df = pd.read_csv(io.BytesIO(content), dtype={"fips": str}, encoding=enc)
-                df["county_clean"] = (
-                    df["name"].str.lower()
-                    .str.replace(" county", "", regex=False)
-                    .str.replace(" parish", "", regex=False)
-                    .str.replace(" borough", "", regex=False)
-                    .str.replace(" census area", "", regex=False)
-                    .str.replace(" city and borough", "", regex=False)
-                    .str.replace(" municipality", "", regex=False)
-                    .str.strip()
-                )
-                df["state_clean"] = df["state_abbr"].str.upper()
-                out = df[["fips", "state_clean", "county_clean", "name", "state"]].drop_duplicates()
-                out["fips"] = out["fips"].str.zfill(5)
-                print("SDFJLLDKJSFLKAJDFKLJDALKFJSF")
-                return out
-            except UnicodeDecodeError:
-                continue
-    except Exception:
-        pass
-    # 2) fallback: Census
-    census_url = "https://www2.census.gov/geo/docs/reference/codes/files/national_county.txt"
-    r = requests.get(census_url, headers=UA, timeout=30)
-    r.raise_for_status()
-    df = pd.read_csv(
-        io.BytesIO(r.content),
-        header=None,
-        names=["state_abbr", "state_fips", "county_fips", "name", "classfp"],
-        dtype=str,
-        sep=",",
-        encoding="latin-1",
-        engine="python",
-    )
-    df["fips"] = df["state_fips"].str.zfill(2) + df["county_fips"].str.zfill(3)
-    STATE_NAMES = {
-        "AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California","CO":"Colorado","CT":"Connecticut",
-        "DE":"Delaware","DC":"District of Columbia","FL":"Florida","GA":"Georgia","HI":"Hawaii","ID":"Idaho","IL":"Illinois",
-        "IN":"Indiana","IA":"Iowa","KS":"Kansas","KY":"Kentucky","LA":"Louisiana","ME":"Maine","MD":"Maryland","MA":"Massachusetts",
-        "MI":"Michigan","MN":"Minnesota","MS":"Mississippi","MO":"Missouri","MT":"Montana","NE":"Nebraska","NV":"Nevada",
-        "NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico","NY":"New York","NC":"North Carolina","ND":"North Dakota",
-        "OH":"Ohio","OK":"Oklahoma","OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina","SD":"South Dakota",
-        "TN":"Tennessee","TX":"Texas","UT":"Utah","VT":"Vermont","VA":"Virginia","WA":"Washington","WV":"West Virginia",
-        "WI":"Wisconsin","WY":"Wyoming","PR":"Puerto Rico","AS":"American Samoa","GU":"Guam","VI":"Virgin Islands","MP":"Northern Mariana Islands"
-    }
-    df["state_clean"] = df["state_abbr"].str.upper()
-    df["state"] = df["state_abbr"].map(STATE_NAMES).fillna(df["state_abbr"])
-    df["county_clean"] = (
-        df["name"].str.lower()
-        .str.replace(" county", "", regex=False)
-        .str.replace(" parish", "", regex=False)
-        .str.replace(" borough", "", regex=False)
-        .str.replace(" census area", "", regex=False)
-        .str.replace(" city and borough", "", regex=False)
-        .str.replace(" municipality", "", regex=False)
-        .str.strip()
-    )
-    out = df[["fips", "state_clean", "county_clean", "name", "state"]].drop_duplicates()
-    out["fips"] = out["fips"].str.zfill(5)
-    return out
-
-@st.cache_data(show_spinner=False)
-def load_county_crosswalk_new() -> pd.DataFrame:
-    local_csv = DATA_DIR / "county_fips_master.csv"
+    local_csv = DATA_DIR / "national_counties.txt"
     if local_csv.exists():
-        for enc in ("utf-8", "utf-8-sig", "latin-1", "cp1252"):
-            try:
-                df = pd.read_csv(local_csv, dtype={"fips": str}, encoding=enc)
-                df["county_clean"] = (
-                    df["name"].str.lower()
-                    .str.replace(" county", "", regex=False)
-                    .str.replace(" parish", "", regex=False)
-                    .str.replace(" borough", "", regex=False)
-                    .str.replace(" census area", "", regex=False)
-                    .str.replace(" city and borough", "", regex=False)
-                    .str.replace(" municipality", "", regex=False)
-                    .str.strip()
-                )
-                df["state_clean"] = df["state_abbr"].str.upper()
-                out = df[["fips", "state_clean", "county_clean", "name", "state"]].drop_duplicates()
-                out["fips"] = out["fips"].str.zfill(5)
-                return out
-            except UnicodeDecodeError:
-                continue
+        df = pd.read_csv(
+            local_csv,
+            header=None,
+            names=["state_abbr", "state_fips", "county_fips", "name", "classfp"],
+            dtype=str,
+            sep=",",
+            encoding="latin-1",
+            engine="python",
+        )
+        df["fips"] = df["state_fips"].str.zfill(2) + df["county_fips"].str.zfill(3)
+        STATE_NAMES = {
+            "AL":"Alabama","AK":"Alaska","AZ":"Arizona","AR":"Arkansas","CA":"California","CO":"Colorado","CT":"Connecticut",
+            "DE":"Delaware","DC":"District of Columbia","FL":"Florida","GA":"Georgia","HI":"Hawaii","ID":"Idaho","IL":"Illinois",
+            "IN":"Indiana","IA":"Iowa","KS":"Kansas","KY":"Kentucky","LA":"Louisiana","ME":"Maine","MD":"Maryland","MA":"Massachusetts",
+            "MI":"Michigan","MN":"Minnesota","MS":"Mississippi","MO":"Missouri","MT":"Montana","NE":"Nebraska","NV":"Nevada",
+            "NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico","NY":"New York","NC":"North Carolina","ND":"North Dakota",
+            "OH":"Ohio","OK":"Oklahoma","OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina","SD":"South Dakota",
+            "TN":"Tennessee","TX":"Texas","UT":"Utah","VT":"Vermont","VA":"Virginia","WA":"Washington","WV":"West Virginia",
+            "WI":"Wisconsin","WY":"Wyoming","PR":"Puerto Rico","AS":"American Samoa","GU":"Guam","VI":"Virgin Islands","MP":"Northern Mariana Islands"
+        }
+        df["state_clean"] = df["state_abbr"].str.upper()
+        df["state"] = df["state_abbr"].map(STATE_NAMES).fillna(df["state_abbr"])
+        df["county_clean"] = (
+            df["name"].str.lower()
+            .str.replace(" county", "", regex=False)
+            .str.replace(" parish", "", regex=False)
+            .str.replace(" borough", "", regex=False)
+            .str.replace(" census area", "", regex=False)
+            .str.replace(" city and borough", "", regex=False)
+            .str.replace(" municipality", "", regex=False)
+            .str.strip()
+        )
+        out = df[["fips", "state_clean", "county_clean", "name", "state"]].drop_duplicates()
+        out["fips"] = out["fips"].str.zfill(5)
+        return out
 
 @st.cache_data(show_spinner=False)
 def load_counties_geojson():
