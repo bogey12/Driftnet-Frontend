@@ -12,6 +12,7 @@ from pathlib import Path
 
 # Import our custom modules
 from config import CORE_MARKET_FIPS_DICT, PAGE_SETTINGS, ALT_THEME
+from queue_capacity_map_helper import render_capacity_map_tab
 
 from data_processing import (
     load_score_data,
@@ -118,7 +119,7 @@ MAP_HTML = MAP_FILE.read_text(encoding="utf-8")
 
 #######################
 # Define tabs
-maps, cal_map, requirements, requirements_summary, results = st.tabs(["Map", "California Map", "Requirements", "Requirements Summary", "Results"])
+maps, cal_map, interconnect_map, requirements, requirements_summary, results = st.tabs(["Map", "California Map", "Interconnection Queue", "Requirements", "Requirements Summary", "Results"])
 
 with maps:
     col = st.columns((1.5, 6.5), gap='medium')
@@ -298,6 +299,14 @@ with cal_map:
         f'<a href="{MAP_FILE.as_posix()}" target="_blank" rel="noopener">'
         '🔗 Open full-screen map</a>',
         unsafe_allow_html=True
+    )
+
+with interconnect_map:
+    st.header("Active Interconnection Queue Capacity by County")
+    render_capacity_map_tab(
+        data_path="data/interconnection_projects_2025_Aug05_all.csv",
+        default_gen_types=["Solar"],          # or None for all types selected by default
+        exclude_states={"AK"}                 # use {"AK","HI","PR","VI","GU","AS","MP"} for strict CONUS
     )
 
 with requirements:
