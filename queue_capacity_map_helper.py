@@ -1,10 +1,16 @@
 # queue_capacity_map.py
 import ast, io, re, requests
+import json
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+from pathlib import Path
 from typing import Optional, List, Set
+
+
+DATA_DIR = Path(__file__).parent / "data"
+DATA_DIR.mkdir(exist_ok=True)
 
 # ======= caching loaders =======
 @st.cache_data(show_spinner=False)
@@ -43,6 +49,7 @@ def load_county_crosswalk() -> pd.DataFrame:
                 df["state_clean"] = df["state_abbr"].str.upper()
                 out = df[["fips", "state_clean", "county_clean", "name", "state"]].drop_duplicates()
                 out["fips"] = out["fips"].str.zfill(5)
+                print("SDFJLLDKJSFLKAJDFKLJDALKFJSF")
                 return out
             except UnicodeDecodeError:
                 continue
@@ -89,9 +96,34 @@ def load_county_crosswalk() -> pd.DataFrame:
     return out
 
 @st.cache_data(show_spinner=False)
+def load_county_crosswalk_new() -> pd.DataFrame:
+    local_csv = DATA_DIR / "county_fips_master.csv"
+    if local_csv.exists():
+        for enc in ("utf-8", "utf-8-sig", "latin-1", "cp1252"):
+            try:
+                df = pd.read_csv(local_csv, dtype={"fips": str}, encoding=enc)
+                df["county_clean"] = (
+                    df["name"].str.lower()
+                    .str.replace(" county", "", regex=False)
+                    .str.replace(" parish", "", regex=False)
+                    .str.replace(" borough", "", regex=False)
+                    .str.replace(" census area", "", regex=False)
+                    .str.replace(" city and borough", "", regex=False)
+                    .str.replace(" municipality", "", regex=False)
+                    .str.strip()
+                )
+                df["state_clean"] = df["state_abbr"].str.upper()
+                out = df[["fips", "state_clean", "county_clean", "name", "state"]].drop_duplicates()
+                out["fips"] = out["fips"].str.zfill(5)
+                return out
+            except UnicodeDecodeError:
+                continue
+
+@st.cache_data(show_spinner=False)
 def load_counties_geojson():
-    url = "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
-    return requests.get(url, timeout=30).json()
+    local_geo = DATA_DIR / "geojson-counties-fips.json"
+    if local_geo.exists():
+        return json.loads(local_geo.read_text(encoding="utf-8"))
 
 # ======= transforms =======
 def _parse_gen_types(val):
