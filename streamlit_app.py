@@ -50,6 +50,8 @@ from constraint_utils import (
     render_regulatory_constraints,
 )
 
+from raeden_BMS_utils import render_requirements_page, render_results_page
+
 # 1) Page config
 st.set_page_config(**PAGE_SETTINGS)
 alt.themes.enable(ALT_THEME)
@@ -311,6 +313,9 @@ with interconnect_map:
 
 with requirements:
     st.header("Requirements")
+    render_requirements_page()
+    '''
+    OLD CODE FOR REQUIREMENTS
     region, city = render_region_site()
     proximity, network_latency = render_infrastructure_importance()
     data_center_type, power_cap, redundancy, power_density, cooling_method, ai_ml_hardware = \
@@ -322,8 +327,12 @@ with requirements:
         render_renewables_and_importance()
     generation_sources, storage_technologies = render_generation_storage()
     water_constraints, land_constraints, custom_constraints = render_site_constraints()
+    '''
 
 with requirements_summary:
+    render_results_page()
+    '''
+    OLD CODE FOR REQUIREMENTS SUMMARY
     display_results_summary_two_columns(
         region=region,
         city=city,
@@ -350,6 +359,7 @@ with requirements_summary:
         land_constraints=land_constraints,
         custom_constraints=custom_constraints,
     )
+    '''
 
 with results:
     st.header("Performance Metrics")
