@@ -121,7 +121,7 @@ MAP_HTML = MAP_FILE.read_text(encoding="utf-8")
 
 #######################
 # Define tabs
-maps, cal_map, interconnect_map, requirements, requirements_summary, results = st.tabs(["Map", "California Map", "Interconnection Queue", "Requirements", "Requirements Summary", "Results"])
+maps, cal_map, interconnect_map, requirements, results, results_old = st.tabs(["Map", "California Map", "Interconnection Queue", "Requirements", "Requirements Summary", "Results"])
 
 with maps:
     col = st.columns((1.5, 6.5), gap='medium')
@@ -316,11 +316,11 @@ with requirements:
     render_requirements_page()
 
 
-with requirements_summary:
+with results:
     render_results_page()
 
 
-with results:
+with results_old:
     st.header("Performance Metrics")
 
     # --- Show three key metrics side by side ---
