@@ -121,7 +121,7 @@ MAP_HTML = MAP_FILE.read_text(encoding="utf-8")
 
 #######################
 # Define tabs
-maps, cal_map, interconnect_map, requirements, results, results_old = st.tabs(["Map", "California Map", "Interconnection Queue", "Requirements", "Requirements Summary", "Results"])
+maps, cal_map, interconnect_map, requirements, results, results_old = st.tabs(["Map", "California Map", "Interconnection Queue", "Requirements", "Results", "Old Results"])
 
 with maps:
     col = st.columns((1.5, 6.5), gap='medium')
