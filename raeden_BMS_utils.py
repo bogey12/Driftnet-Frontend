@@ -159,8 +159,7 @@ def render_results_page():
     st.divider()
     st.subheader("Scenario Comparison Table")
     
-    # Use Pandas Styler to highlight Min/Max values
-    # We highlight Min for costs/degradation and Max for Revenue
+    # REMOVED .background_gradient to fix the ImportError
     st.dataframe(
         df.style.format({
             "Demand Charges ($)": "${:,.0f}",
@@ -168,13 +167,7 @@ def render_results_page():
             "Grid Service Revenue ($)": "${:,.0f}",
             "Total Net Cost ($)": "${:,.0f}",
             "Battery Degradation (%)": "{:.1f}%"
-        }).background_gradient(
-            subset=["Demand Charges ($)", "TOU Energy Charges ($)", "Total Net Cost ($)"], 
-            cmap="RdYlGn_r" # Red (High Cost) to Green (Low Cost)
-        ).background_gradient(
-            subset=["Grid Service Revenue ($)"], 
-            cmap="RdYlGn"   # Red (Low Rev) to Green (High Rev)
-        ),
+        }),
         use_container_width=True
     )
 
