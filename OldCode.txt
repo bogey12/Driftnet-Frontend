@@ -1,0 +1,44 @@
+    '''
+    OLD CODE FOR REQUIREMENTS
+    region, city = render_region_site()
+    proximity, network_latency = render_infrastructure_importance()
+    data_center_type, power_cap, redundancy, power_density, cooling_method, ai_ml_hardware = \
+        render_data_center_specs()
+    inflexible_pct, short_term_pct, medium_term_pct, long_term_pct = render_workload_flexibility()
+    peak_usage, latency_sensitivity, seasonality = render_timing_and_sensitivity()
+    ai_ml_pct, databases_pct, web_services_pct, media_streaming_pct = render_workload_mix()
+    renewable_perc, cost_importance, reliability_importance, sustainability_importance = \
+        render_renewables_and_importance()
+    generation_sources, storage_technologies = render_generation_storage()
+    water_constraints, land_constraints, custom_constraints = render_site_constraints()
+    '''
+
+    '''
+    OLD CODE FOR REQUIREMENTS SUMMARY
+    display_results_summary_two_columns(
+        region=region,
+        city=city,
+        proximity=proximity,
+        network_latency=network_latency,
+        latency_sensitivity=latency_sensitivity,
+        peak_usage=peak_usage,
+        seasonality=seasonality,
+        data_center_type=data_center_type,
+        power_cap=power_cap,
+        redundancy=redundancy,
+        power_density=power_density,
+        cooling_method=cooling_method,
+        ai_ml_hardware=ai_ml_hardware,
+        inflexible_pct=inflexible_pct,
+        ai_ml_pct=ai_ml_pct,
+        renewable_perc=renewable_perc,
+        cost_importance=cost_importance,
+        reliability_importance=reliability_importance,
+        sustainability_importance=sustainability_importance,
+        generation_sources=generation_sources,
+        storage_technologies=storage_technologies,
+        water_constraints=water_constraints,
+        land_constraints=land_constraints,
+        custom_constraints=custom_constraints,
+    )
+    '''
