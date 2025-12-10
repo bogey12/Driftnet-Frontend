@@ -100,10 +100,8 @@ def render_requirements_page():
 
 def render_results_page():
     st.title("📊 Optimization Results & Scenarios")
-    st.markdown("Comparative analysis of financial performance and asset health across operational strategies.")
-
-    # --- 1. Generate Fake Placeholder Data ---
-    # We create a dictionary to simulate the output of your optimization engine
+    
+    # --- 1. Generate Data (Same as before) ---
     data = {
         "Scenario": [
             "1. Grid Tied (Baseline)", 
@@ -111,55 +109,52 @@ def render_results_page():
             "3. Grid + Gen + Storage", 
             "4. Grid + Gen + Storage + Demand Flex"
         ],
-        "Demand Charges ($)": [50000, 42000, 15000, 8000],   # Minimize
-        "TOU Energy Charges ($)": [120000, 95000, 85000, 70000], # Minimize
-        "Grid Service Revenue ($)": [0, 0, 12000, 25000],    # Maximize
-        "Battery Degradation (%)": [0, 0, 1.2, 2.5]          # Minimize (0 for non-battery scenarios)
+        "Demand Charges ($)": [50000, 42000, 15000, 8000],
+        "TOU Energy Charges ($)": [120000, 95000, 85000, 70000],
+        "Grid Service Revenue ($)": [0, 0, 12000, 25000],
+        "Battery Degradation (%)": [0, 0, 1.2, 2.5]
     }
-    
     df = pd.DataFrame(data)
-    
-    # Calculate Total Net Cost (Cost - Revenue) for easy comparison
     df["Total Net Cost ($)"] = (
         df["Demand Charges ($)"] + 
         df["TOU Energy Charges ($)"] - 
         df["Grid Service Revenue ($)"]
     )
 
-    # --- 2. High Level Metrics (The "Winner") ---
+    # --- 2. High Level Metrics (FIXED) ---
     st.divider()
-    st.header("🏆 Recommended Strategy")
     
-    # Identify best scenario (lowest Net Cost)
+    # Identify best scenario
     best_scenario = df.loc[df["Total Net Cost ($)"].idxmin()]
     baseline = df.iloc[0]
     savings = baseline["Total Net Cost ($)"] - best_scenario["Total Net Cost ($)"]
     
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric(
-            label="Optimal Configuration", 
-            value=best_scenario["Scenario"].split(". ")[1]
-        )
-    with col2:
-        st.metric(
-            label="Projected Monthly Net Cost", 
-            value=f"${best_scenario['Total Net Cost ($)']:,.0f}",
-            delta=f"-${savings:,.0f} vs Baseline",
-            delta_color="inverse"
-        )
-    with col3:
-        st.metric(
-            label="Est. Battery Impact",
-            value=f"{best_scenario['Battery Degradation (%)']}% / yr",
-            help="Projected capacity fade based on cycling profile."
-        )
+    # FIX: Use a container with a border for the "Winner" card
+    # This allows the long name to exist as a header, preventing cutoff
+    with st.container(border=True):
+        st.caption("🏆 RECOMMENDED STRATEGY")
+        # Using markdown with a header allows text wrapping
+        st.markdown(f"### {best_scenario['Scenario']}")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric(
+                label="Projected Monthly Net Cost", 
+                value=f"${best_scenario['Total Net Cost ($)']:,.0f}",
+                delta=f"-${savings:,.0f} vs Baseline",
+                delta_color="inverse"
+            )
+        with col2:
+            st.metric(
+                label="Est. Battery Impact",
+                value=f"{best_scenario['Battery Degradation (%)']}% / yr",
+                help="Projected capacity fade."
+            )
 
     # --- 3. Detailed Data Table ---
     st.divider()
     st.subheader("Scenario Comparison Table")
-    
-    # REMOVED .background_gradient to fix the ImportError
+    # Kept simple to avoid matplotlib error
     st.dataframe(
         df.style.format({
             "Demand Charges ($)": "${:,.0f}",
@@ -171,7 +166,7 @@ def render_results_page():
         use_container_width=True
     )
 
-    # --- 4. Visualizations ---
+    # --- 4. Visualizations (FIXED) ---
     st.divider()
     st.header("📉 Financial Breakdown")
     
@@ -180,7 +175,6 @@ def render_results_page():
     with tab1:
         st.markdown("Breakdown of costs and revenues by scenario.")
         
-        # Reshape for stacked bar chart
         chart_df = df.melt(
             id_vars=["Scenario"], 
             value_vars=["Demand Charges ($)", "TOU Energy Charges ($)", "Grid Service Revenue ($)"],
@@ -188,29 +182,25 @@ def render_results_page():
             value_name="Amount ($)"
         )
         
-        # Make revenue negative for visual stacking effect (Cost vs Revenue)
-        # Note: Simple bar charts stack positive values. For Net impact, we might keep them distinct.
-        # Here we just show the raw components.
-        
+        # FIX: Swapped X and Y to create a HORIZONTAL bar chart.
+        # y="Scenario" puts the long labels on the left side, making them readable.
         st.bar_chart(
             chart_df, 
-            x="Scenario", 
-            y="Amount ($)", 
+            y="Scenario",  
+            x="Amount ($)", 
             color="Category",
-            stack=False # Grouped bars are often better for comparing components
+            stack=False
         )
         
     with tab2:
-        st.markdown("Projected annual battery health impact.")
-        # Filter out scenarios without batteries for clean charting
         batt_df = df[df["Battery Degradation (%)"] > 0]
-        
         if not batt_df.empty:
+            # FIX: Horizontal chart here as well for consistency
             st.bar_chart(
                 batt_df,
-                x="Scenario",
-                y="Battery Degradation (%)",
-                color="#FF4B4B" # Red color to signify 'damage/wear'
+                y="Scenario",
+                x="Battery Degradation (%)",
+                color="#FF4B4B"
             )
         else:
             st.info("No scenarios with battery storage selected.")
